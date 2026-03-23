@@ -522,6 +522,89 @@
       letter-spacing: 0.12em;
     }
 
+    /* ─── SERVICIOS LIST ─── */
+    #servicios {
+      padding: 130px 52px 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .servicios-left {
+      position: sticky;
+      top: 120px;
+    }
+
+    .servicios-left .section-title {
+      margin-bottom: 40px;
+    }
+
+    .servicios-tagline {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.75;
+      max-width: 340px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .servicios-tagline em {
+      font-style: normal;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .servicios-list {
+      list-style: none;
+      padding-top: 8px;
+    }
+
+    .servicios-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      transition: border-color 0.3s;
+      cursor: default;
+    }
+
+    .servicios-list li:first-child {
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .servicios-list li:hover {
+      border-bottom-color: rgba(255,255,255,0.2);
+    }
+
+    .servicios-num {
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.15em;
+      flex-shrink: 0;
+      width: 28px;
+      transition: color 0.3s;
+    }
+
+    .servicios-list li:hover .servicios-num {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .servicios-text {
+      font-size: 17px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.02em;
+      transition: color 0.3s;
+      line-height: 1.3;
+    }
+
+    .servicios-list li:hover .servicios-text {
+      color: #fff;
+    }
+
     /* ─── NO CURSOR ON TOUCH ─── */
     @media (pointer: coarse) {
       body { cursor: auto; }
@@ -533,7 +616,9 @@
     @media (max-width: 960px) {
       .products-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
       nav { padding: 22px 28px; }
-      #productos, #contacto { padding: 80px 28px; }
+      #productos, #contacto, #servicios { padding: 80px 28px; }
+      #servicios { grid-template-columns: 1fr; gap: 40px; }
+      .servicios-left { position: static; }
       .contact-channels { grid-template-columns: 1fr; }
       footer { padding: 32px 28px; flex-direction: column; gap: 12px; text-align: center; }
     }
@@ -576,6 +661,26 @@
     <span>Scroll</span>
     <div class="scroll-line"></div>
   </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SERVICIOS ── -->
+<section id="servicios">
+  <div class="servicios-left">
+    <p class="section-label">Lo que hacemos</p>
+    <h2 class="section-title">PARA TU<br>NEGOCIO</h2>
+    <p class="servicios-tagline">Todo pensado para <em>atraer, convertir</em> y generar clientes.</p>
+  </div>
+  <ul class="servicios-list">
+    <li><span class="servicios-num">01</span><span class="servicios-text">Diseño de páginas web</span></li>
+    <li><span class="servicios-num">02</span><span class="servicios-text">Landing pages enfocadas en conversión</span></li>
+    <li><span class="servicios-num">03</span><span class="servicios-text">Estrategia SEO</span></li>
+    <li><span class="servicios-num">04</span><span class="servicios-text">Campañas en Google Ads y redes sociales</span></li>
+    <li><span class="servicios-num">05</span><span class="servicios-text">Diseño de contenido para redes</span></li>
+    <li><span class="servicios-num">06</span><span class="servicios-text">Edición y creación de video (reels / YouTube)</span></li>
+    <li><span class="servicios-num">07</span><span class="servicios-text">Dirección visual y estética de marca</span></li>
+  </ul>
 </section>
 
 <div class="divider"></div>
@@ -908,6 +1013,26 @@ window.addEventListener('resize', () => {
 /* ════════════════════════════════
    SCROLL ANIMATIONS
 ════════════════════════════════ */
+// Servicios
+gsap.from('#servicios .section-label', {
+  opacity: 0, y: 20, duration: 0.7,
+  scrollTrigger: { trigger: '#servicios', start: 'top 82%' }
+});
+gsap.from('#servicios .section-title', {
+  opacity: 0, y: 44, duration: 0.9,
+  scrollTrigger: { trigger: '#servicios', start: 'top 78%' }
+});
+gsap.from('#servicios .servicios-tagline', {
+  opacity: 0, y: 20, duration: 0.7,
+  scrollTrigger: { trigger: '#servicios', start: 'top 70%' }
+});
+gsap.utils.toArray('.servicios-list li').forEach((li, i) => {
+  gsap.from(li, {
+    opacity: 0, x: 30, duration: 0.6, delay: i * 0.07,
+    scrollTrigger: { trigger: '.servicios-list', start: 'top 82%' }
+  });
+});
+
 // Productos
 gsap.from('#productos .section-label', {
   opacity: 0, y: 20, duration: 0.7,
