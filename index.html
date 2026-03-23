@@ -299,6 +299,7 @@
       background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%);
       opacity: 0;
       transition: opacity 0.4s;
+      pointer-events: none;
     }
 
     .product-card:hover {
@@ -519,6 +520,13 @@
       font-size: 11px;
       color: rgba(255,255,255,0.45);
       letter-spacing: 0.12em;
+    }
+
+    /* ─── NO CURSOR ON TOUCH ─── */
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      #cur-dot, #cur-ring { display: none; }
+      a, button, [data-tilt] { cursor: pointer; }
     }
 
     /* ─── RESPONSIVE ─── */
@@ -812,7 +820,7 @@ renderer.setSize(innerWidth, innerHeight);
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 
 // Formas geométricas wireframe
-const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.18 });
 
 const shapeDefs = [
   { geo: new THREE.IcosahedronGeometry(4.5, 1), x:  0,    y:  0,   z:  0,  sx: 1, sy: 1, sz: 1 },
@@ -857,7 +865,7 @@ for (let i = 0; i < pCount; i++) {
 }
 const pGeo = new THREE.BufferGeometry();
 pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
-const pMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.35 });
+const pMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.1, transparent: true, opacity: 0.18 });
 scene.add(new THREE.Points(pGeo, pMat));
 
 // Parallax del ratón
