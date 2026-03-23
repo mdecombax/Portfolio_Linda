@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linda Web &amp; Growth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'NOTHING';
+      src: url('./NOTHING.otf.ttf') format('truetype');
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    /* ─── LOADER ─── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #loader-num {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(80px, 16vw, 180px);
+      color: #fff;
+      line-height: 1;
+      user-select: none;
+    }
+
+    #loader-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: #fff;
+    }
+
+    /* ─── CURSOR ─── */
+    #cur-dot {
+      width: 7px;
+      height: 7px;
+      background: #fff;
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+
+    #cur-ring {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 28px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-family: 'NOTHING', sans-serif;
+      font-size: 13px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: #fff; }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #three-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 0 24px;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(64px, 13vw, 160px);
+      line-height: 0.88;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .title-line {
+      display: block;
+      transform: translateY(100%);
+      opacity: 0;
+    }
+
+    .hero-sub {
+      font-size: clamp(12px, 1.4vw, 15px);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-top: 32px;
+      opacity: 0;
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero-cta {
+      display: inline-block;
+      margin-top: 52px;
+      padding: 15px 52px;
+      border: 1px solid rgba(255,255,255,0.5);
+      color: #fff;
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: background 0.35s, color 0.35s, border-color 0.35s;
+    }
+
+    .hero-cta:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+    }
+
+    .scroll-hint span {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 44px;
+      background: rgba(255,255,255,0.15);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      animation: scrollDown 1.8s ease infinite;
+    }
+
+    @keyframes scrollDown {
+      0%   { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── SECTION COMMON ─── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(44px, 7vw, 84px);
+      line-height: 0.95;
+    }
+
+    /* ─── PRODUCTOS ─── */
+    #productos {
+      padding: 130px 52px 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #productos .section-title {
+      margin-bottom: 80px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .product-card {
+      border: 1px solid var(--border);
+      padding: 52px 44px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .product-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .product-card:hover {
+      border-color: rgba(255,255,255,0.25);
+    }
+
+    .product-card:hover::after {
+      opacity: 1;
+    }
+
+    .product-card.featured {
+      border-color: rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .product-card.featured::after {
+      opacity: 1;
+    }
+
+    .card-tag {
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 36px;
+    }
+
+    .card-tag.highlight { color: rgba(255,255,255,0.85); }
+
+    .card-icon {
+      display: block;
+      margin-bottom: 24px;
+      opacity: 0.5;
+    }
+
+    .card-icon svg {
+      display: block;
+    }
+
+    .card-name {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+
+    .card-tagline {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .card-features {
+      list-style: none;
+      margin-bottom: 44px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .card-features li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.62);
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .card-features li::before {
+      content: '—';
+      color: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .card-price {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(26px, 3vw, 38px);
+    }
+
+    .card-price-currency {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    .card-btn {
+      display: block;
+      margin-top: 28px;
+      padding: 13px 0;
+      border: 1px solid rgba(255,255,255,0.22);
+      text-align: center;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: all 0.35s;
+    }
+
+    .card-btn:hover,
+    .product-card.featured .card-btn {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    /* ─── CONTACTO ─── */
+    #contacto {
+      padding: 120px 52px 130px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .contact-channels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 72px;
+    }
+
+    .contact-channel {
+      border: 1px solid var(--border);
+      padding: 56px 52px 52px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: border-color 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-channel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .contact-channel:hover {
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    .contact-channel:hover::after {
+      opacity: 1;
+    }
+
+    .channel-icon {
+      display: block;
+      opacity: 0.45;
+      margin-bottom: 36px;
+    }
+
+    .channel-label {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 16px;
+    }
+
+    .channel-name {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(28px, 3vw, 42px);
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 24px;
+    }
+
+    .channel-desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      max-width: 320px;
+      margin-bottom: 48px;
+    }
+
+    .channel-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-top: auto;
+      transition: color 0.3s;
+    }
+
+    .contact-channel:hover .channel-cta {
+      color: #fff;
+    }
+
+    .channel-cta svg {
+      transition: transform 0.3s;
+    }
+
+    .contact-channel:hover .channel-cta svg {
+      transform: translateX(5px);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 36px 52px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.12em;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      .products-grid { grid-template-columns: 1fr; max-width: 500px; margin: 0 auto; }
+      nav { padding: 22px 28px; }
+      #productos, #contacto { padding: 80px 28px; }
+      .contact-channels { grid-template-columns: 1fr; }
+      footer { padding: 32px 28px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOADER ── -->
+<div id="loader">
+  <div id="loader-num">0</div>
+  <div id="loader-bar"></div>
+</div>
+
+<!-- ── CURSOR ── -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">LINDA WEB &amp; GROWTH</a>
+  <ul class="nav-links">
+    <li><a href="#productos">Servicios</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <canvas id="three-canvas"></canvas>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Agencia de Marketing Digital</p>
+    <h1 class="hero-title">
+      <span class="title-line">PRESENCIA</span>
+      <span class="title-line">DIGITAL</span>
+    </h1>
+    <p class="hero-sub">Estrategia &nbsp;·&nbsp; Diseño &nbsp;·&nbsp; Crecimiento</p>
+    <a href="#productos" class="hero-cta">Ver servicios</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── PRODUCTOS ── -->
+<section id="productos">
+  <p class="section-label">Nuestros servicios</p>
+  <h2 class="section-title">ELIGE TU<br>CAMINO</h2>
+
+  <div class="products-grid">
+
+    <!-- 1 -->
+    <div class="product-card" data-tilt>
+      <p class="card-tag">Starter</p>
+      <span class="card-icon">
+        <!-- Signal broadcast — presencia que empieza a irradiar -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+          <circle cx="18" cy="27" r="1.8" fill="currentColor" stroke="none"/>
+          <path d="M12.5 22.5 A7.8 7.8 0 0 1 23.5 22.5"/>
+          <path d="M8 17.5 A13 13 0 0 1 28 17.5"/>
+          <path d="M3.5 12.5 A20.5 20.5 0 0 1 32.5 12.5"/>
+        </svg>
+      </span>
+      <h3 class="card-name">Impulso Digital</h3>
+      <p class="card-tagline">Para empezar a generar presencia con intención.</p>
+      <ul class="card-features">
+        <li>Landing page estratégica</li>
+        <li>Diseño enfocado en conversión</li>
+        <li>Integración de contacto</li>
+        <li>SEO básico</li>
+      </ul>
+      <div class="card-price">
+        $12,000 – $14,000
+        <span class="card-price-currency">pesos mexicanos</span>
+      </div>
+      <a href="#contacto" class="card-btn">Comenzar</a>
+    </div>
+
+    <!-- 2 (Destacado) -->
+    <div class="product-card featured" data-tilt>
+      <p class="card-tag highlight">⭐ Recomendado</p>
+      <span class="card-icon">
+        <!-- Nodos ascendentes — crecimiento medible con estructura -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="31" x2="5" y2="5"/>
+          <line x1="5" y1="31" x2="33" y2="31"/>
+          <circle cx="8" cy="27" r="2"/>
+          <circle cx="16" cy="20" r="2"/>
+          <circle cx="23" cy="14" r="2"/>
+          <circle cx="30" cy="8" r="2"/>
+          <polyline points="8,27 16,20 23,14 30,8"/>
+        </svg>
+      </span>
+      <h3 class="card-name">Crecimiento Constante</h3>
+      <p class="card-tagline">Para negocios que quieren estructura y resultados.</p>
+      <ul class="card-features">
+        <li>Sitio web hasta 5 secciones</li>
+        <li>Diseño + UX estratégico</li>
+        <li>SEO optimizado</li>
+        <li>Configuración de campaña inicial</li>
+        <li>Asesoría personalizada</li>
+      </ul>
+      <div class="card-price">
+        $22,000 – $30,000
+        <span class="card-price-currency">pesos mexicanos</span>
+      </div>
+      <a href="#contacto" class="card-btn">Comenzar</a>
+    </div>
+
+    <!-- 3 -->
+    <div class="product-card" data-tilt>
+      <p class="card-tag">Premium</p>
+      <span class="card-icon">
+        <!-- Hexágono doble con centro — autoridad, estructura sólida -->
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="18,3 31,10.5 31,25.5 18,33 5,25.5 5,10.5"/>
+          <polygon points="18,10 25,14 25,22 18,26 11,22 11,14"/>
+          <circle cx="18" cy="18" r="2" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+      <h3 class="card-name">Autoridad Digital</h3>
+      <p class="card-tagline">Para escalar y posicionarse de forma sólida.</p>
+      <ul class="card-features">
+        <li>Sitio web completo</li>
+        <li>Landing page adicional</li>
+        <li>Estrategia de captación</li>
+        <li>Campañas publicitarias (Ads)</li>
+        <li>Contenido (grabación + edición)</li>
+      </ul>
+      <div class="card-price">
+        $30,000 – $38,000
+        <span class="card-price-currency">pesos mexicanos</span>
+      </div>
+      <a href="#contacto" class="card-btn">Comenzar</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CONTACTO ── -->
+<section id="contacto">
+  <p class="section-label">Hablemos</p>
+  <h2 class="section-title">¿LISTO PARA<br>CRECER?</h2>
+
+  <div class="contact-channels">
+
+    <a href="https://wa.me/527293626302" target="_blank" class="contact-channel">
+      <span class="channel-icon">
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 4C10.716 4 4 10.716 4 19c0 2.628.676 5.1 1.86 7.248L4 34l7.98-2.028A14.94 14.94 0 0 0 19 34c8.284 0 15-6.716 15-15S27.284 4 19 4Z"/>
+          <path d="M14 15.5c.5 1.5 1.5 3 3 4.5s3 2.5 4.5 3c.5.2.9.1 1.2-.2l1-1c.3-.3.8-.3 1.1 0l2 2c.3.3.3.8 0 1.1-.8.8-1.9 1.3-3 1.1-3-.4-6.5-2.8-8.5-5.5-1-1.4-1.8-3.2-1.8-5 0-1 .5-2 1.2-2.7.3-.3.8-.3 1.1 0l2 2c.3.3.3.8 0 1.1l-1 1c-.3.3-.4.7-.2 1.1Z"/>
+        </svg>
+      </span>
+      <p class="channel-label">Mensaje directo</p>
+      <h3 class="channel-name">WhatsApp</h3>
+      <p class="channel-desc">Para conversaciones directas y sin rodeos. Respondemos en menos de 24 horas. Sin presión, a tu ritmo.</p>
+      <span class="channel-cta">
+        Iniciar conversación
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><line x1="2" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+      </span>
+    </a>
+
+    <a href="mailto:lndmolano@gmail.com" class="contact-channel">
+      <span class="channel-icon">
+        <svg width="38" height="38" viewBox="0 0 38 38" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="9" width="30" height="20" rx="2"/>
+          <polyline points="4,12 19,22 34,12"/>
+        </svg>
+      </span>
+      <p class="channel-label">Correo electrónico</p>
+      <h3 class="channel-name">E-mail</h3>
+      <p class="channel-desc">Prefiere escribir con calma y detalle. Cuéntanos tu proyecto y te respondemos en 48 horas con una propuesta clara.</p>
+      <span class="channel-cta">
+        Enviar correo
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"><line x1="2" y1="8" x2="13" y2="8"/><polyline points="9,4 13,8 9,12"/></svg>
+      </span>
+    </a>
+
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>© 2025 Linda Web &amp; Growth</span>
+  <span>México &nbsp;·&nbsp; Diseño con intención</span>
+</footer>
+
+<!-- ── SCRIPTS ── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* ════════════════════════════════
+   LOADER
+════════════════════════════════ */
+const loaderNum = document.getElementById('loader-num');
+const loaderBar = document.getElementById('loader-bar');
+const loader    = document.getElementById('loader');
+
+const counter = { val: 0 };
+
+gsap.to(counter, {
+  val: 100,
+  duration: 2.2,
+  ease: 'power2.inOut',
+  onUpdate() {
+    loaderNum.textContent = Math.floor(counter.val);
+  },
+  onComplete() {
+    const tl = gsap.timeline();
+
+    tl.to(loaderNum,  { opacity: 0, y: -30, duration: 0.4, ease: 'power2.in' })
+      .to(loaderBar,  { width: '100%', duration: 0.55, ease: 'power2.inOut' }, '-=0.15')
+      .to(loader,     { yPercent: -100, duration: 1, ease: 'expo.inOut' })
+      .fromTo('.nav-logo, .nav-links a',
+        { opacity: 0, y: -14 },
+        { opacity: 1, y: 0, stagger: 0.08, duration: 0.55, ease: 'power2.out' },
+        '-=0.35'
+      )
+      .to('.title-line',
+        { y: 0, opacity: 1, stagger: 0.12, duration: 1.1, ease: 'expo.out' },
+        '-=0.45'
+      )
+      .to('.hero-eyebrow', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.5')
+      .to('.hero-sub',     { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
+      .to('.hero-cta',     { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out' }, '-=0.35')
+      .to('.scroll-hint',  { opacity: 1, duration: 0.5 }, '-=0.2');
+  }
+});
+
+/* ════════════════════════════════
+   CURSOR (con delay)
+════════════════════════════════ */
+const curDot  = document.getElementById('cur-dot');
+const curRing = document.getElementById('cur-ring');
+
+let mX = 0, mY = 0;
+let rX = 0, rY = 0;
+
+document.addEventListener('mousemove', e => {
+  mX = e.clientX;
+  mY = e.clientY;
+  gsap.to(curDot, { x: mX, y: mY, duration: 0.08, ease: 'none' });
+});
+
+(function animateRing() {
+  rX += (mX - rX) * 0.10;
+  rY += (mY - rY) * 0.10;
+  gsap.set(curRing, { x: rX, y: rY });
+  requestAnimationFrame(animateRing);
+})();
+
+document.querySelectorAll('a, button, .product-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    gsap.to(curRing, { width: 54, height: 54, duration: 0.3, ease: 'power2.out' });
+    gsap.to(curDot,  { scale: 0,  duration: 0.25 });
+  });
+  el.addEventListener('mouseleave', () => {
+    gsap.to(curRing, { width: 34, height: 34, duration: 0.35, ease: 'power2.out' });
+    gsap.to(curDot,  { scale: 1,  duration: 0.25 });
+  });
+});
+
+/* ════════════════════════════════
+   THREE.JS — HERO 3D
+════════════════════════════════ */
+const scene    = new THREE.Scene();
+const camera   = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.1, 1000);
+camera.position.z = 32;
+
+const renderer = new THREE.WebGLRenderer({
+  canvas: document.getElementById('three-canvas'),
+  antialias: true,
+  alpha: true
+});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+// Formas geométricas wireframe
+const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true });
+
+const shapeDefs = [
+  { geo: new THREE.IcosahedronGeometry(4.5, 1), x:  0,    y:  0,   z:  0,  sx: 1, sy: 1, sz: 1 },
+  { geo: new THREE.TorusGeometry(9, 0.4, 8, 36),x:  0,    y:  0,   z: -6,  sx: 1, sy: 1, sz: 1 },
+  { geo: new THREE.OctahedronGeometry(2.2, 0),  x:-16,    y:  9,   z:-10,  sx: 0.8, sy: 0.8, sz: 0.8 },
+  { geo: new THREE.TetrahedronGeometry(2.8, 0), x: 15,    y: -7,   z: -9,  sx: 0.9, sy: 0.9, sz: 0.9 },
+  { geo: new THREE.IcosahedronGeometry(1.6, 0), x: 19,    y: 11,   z: -5,  sx: 0.7, sy: 0.7, sz: 0.7 },
+  { geo: new THREE.OctahedronGeometry(1.2, 0),  x:-19,    y: -9,   z: -7,  sx: 0.7, sy: 0.7, sz: 0.7 },
+  { geo: new THREE.TetrahedronGeometry(1.4, 0), x:  8,    y: 14,   z:-12,  sx: 0.6, sy: 0.6, sz: 0.6 },
+];
+
+const meshes = shapeDefs.map(d => {
+  const m = new THREE.Mesh(d.geo, wireMat.clone());
+  m.position.set(d.x, d.y, d.z);
+  scene.add(m);
+  return m;
+});
+
+// Entrada espectacular — vienen de afuera
+meshes.forEach((m, i) => {
+  const tx = m.position.x, ty = m.position.y, tz = m.position.z;
+  m.position.set(
+    (Math.random() - 0.5) * 120,
+    (Math.random() - 0.5) * 120,
+    (Math.random() - 0.5) * 60 - 40
+  );
+  m.scale.setScalar(0.01);
+
+  gsap.to(m.position, { x: tx, y: ty, z: tz,
+    duration: 2.4, delay: 0.4 + i * 0.14, ease: 'expo.out' });
+  gsap.to(m.scale, { x: 1, y: 1, z: 1,
+    duration: 1.8, delay: 0.4 + i * 0.14, ease: 'back.out(1.5)' });
+});
+
+// Partículas de fondo
+const pCount = 2000;
+const pPos   = new Float32Array(pCount * 3);
+for (let i = 0; i < pCount; i++) {
+  pPos[i*3]   = (Math.random() - 0.5) * 130;
+  pPos[i*3+1] = (Math.random() - 0.5) * 130;
+  pPos[i*3+2] = (Math.random() - 0.5) * 70 - 10;
+}
+const pGeo = new THREE.BufferGeometry();
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const pMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.35 });
+scene.add(new THREE.Points(pGeo, pMat));
+
+// Parallax del ratón
+let tgtX = 0, tgtY = 0, curGX = 0, curGY = 0;
+window.addEventListener('mousemove', e => {
+  tgtX = (e.clientX / innerWidth  - 0.5) * 0.55;
+  tgtY = (e.clientY / innerHeight - 0.5) * 0.35;
+});
+
+const rotSpeeds = [
+  [0.003, 0.002, 0],
+  [0, 0.004, 0.002],
+  [0.008, 0.007, 0],
+  [0, 0.007, 0.005],
+  [0.011, 0, 0.008],
+  [0, 0.009, 0.006],
+  [0.006, 0.005, 0.004],
+];
+
+(function render() {
+  requestAnimationFrame(render);
+  curGX += (tgtX - curGX) * 0.04;
+  curGY += (tgtY - curGY) * 0.04;
+  scene.rotation.y =  curGX * 0.4;
+  scene.rotation.x = -curGY * 0.3;
+  meshes.forEach((m, i) => {
+    m.rotation.x += rotSpeeds[i][0];
+    m.rotation.y += rotSpeeds[i][1];
+    m.rotation.z += rotSpeeds[i][2];
+  });
+  renderer.render(scene, camera);
+})();
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+/* ════════════════════════════════
+   SCROLL ANIMATIONS
+════════════════════════════════ */
+// Productos
+gsap.from('#productos .section-label', {
+  opacity: 0, y: 20, duration: 0.7,
+  scrollTrigger: { trigger: '#productos', start: 'top 82%' }
+});
+gsap.from('#productos .section-title', {
+  opacity: 0, y: 44, duration: 0.9,
+  scrollTrigger: { trigger: '#productos', start: 'top 78%' }
+});
+gsap.utils.toArray('.product-card').forEach((card, i) => {
+  gsap.from(card, {
+    opacity: 0, y: 70, duration: 0.85, delay: i * 0.14,
+    scrollTrigger: { trigger: '.products-grid', start: 'top 82%' }
+  });
+});
+
+// Contacto
+gsap.from('#contacto .section-label', {
+  opacity: 0, y: 20, duration: 0.7,
+  scrollTrigger: { trigger: '#contacto', start: 'top 80%' }
+});
+gsap.from('#contacto .section-title', {
+  opacity: 0, y: 44, duration: 0.9,
+  scrollTrigger: { trigger: '#contacto', start: 'top 75%' }
+});
+gsap.utils.toArray('.contact-channel').forEach((el, i) => {
+  gsap.from(el, {
+    opacity: 0, y: 60, duration: 0.9, delay: i * 0.18,
+    scrollTrigger: { trigger: '.contact-channels', start: 'top 80%' }
+  });
+});
+
+/* ════════════════════════════════
+   TILT 3D en las cards
+════════════════════════════════ */
+document.querySelectorAll('[data-tilt]').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r   = card.getBoundingClientRect();
+    const x   = e.clientX - r.left;
+    const y   = e.clientY - r.top;
+    const cx  = r.width  / 2;
+    const cy  = r.height / 2;
+    const rx  = ((y - cy) / cy) * -9;
+    const ry  = ((x - cx) / cx) *  9;
+    gsap.to(card, {
+      rotateX: rx, rotateY: ry,
+      transformPerspective: 900,
+      duration: 0.45, ease: 'power2.out'
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    gsap.to(card, {
+      rotateX: 0, rotateY: 0,
+      duration: 0.7, ease: 'elastic.out(1, 0.45)'
+    });
+  });
+});
+</script>
+</body>
+</html>
