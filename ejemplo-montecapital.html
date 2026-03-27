@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crédito para tu empresa — MonteCapital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+
+  <!-- Three.js + GSAP -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream:    #F4F2EC;
+      --white:    #FDFCFA;
+      --dark:     #141210;
+      --green:    #1B5E2A;
+      --green-dk: #144820;
+      --green-lt: #E8F4EA;
+      --green-ac: #4DB866;
+      --border:   #DDD9CE;
+      --text:     #252220;
+      --muted:    #7A776D;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── PAGE LOADER ── */
+    #page-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: top center;
+    }
+
+    .loader-wordmark {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .loader-bar {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px; width: 0;
+      background: rgba(255,255,255,0.4);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      height: 68px;
+      transition: background 0.3s, box-shadow 0.3s;
+      opacity: 0; /* revealed by GSAP */
+    }
+
+    nav.scrolled {
+      background: rgba(244,242,236,0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+
+    .nav-logo-box {
+      width: 34px; height: 34px;
+      background: var(--green); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .nav-logo-box:hover { transform: rotate(8deg) scale(1.1); }
+    .nav-logo-box svg { width: 18px; height: 18px; }
+
+    .nav-wordmark { font-size: 16px; font-weight: 800; color: var(--dark); letter-spacing: -0.025em; }
+    .nav-wordmark span { color: var(--green); font-weight: 400; }
+
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { font-size: 13.5px; font-weight: 500; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--dark); }
+
+    .nav-phone {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--green); color: #fff;
+      padding: 10px 22px; border-radius: 7px;
+      font-size: 13px; font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+
+    .nav-phone::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.3s;
+    }
+
+    .nav-phone:hover { background: var(--green-dk); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(27,94,42,0.3); }
+    .nav-phone svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── HERO WRAPPER + CANVAS ── */
+    #hero-wrapper {
+      position: relative;
+      background: var(--cream);
+      overflow: hidden;
+    }
+
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      padding: 72px 5% 0;
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 56px; align-items: end;
+      max-width: 1200px; margin: 0 auto;
+      min-height: 620px;
+      position: relative; z-index: 1;
+    }
+
+    .hero-left { padding-bottom: 72px; }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--green-lt);
+      border: 1px solid rgba(27,94,42,0.2);
+      color: var(--green);
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 6px 14px; border-radius: 100px;
+      margin-bottom: 26px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--green-ac); border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.7); }
+    }
+
+    .hero-h1 {
+      font-size: clamp(40px, 4.8vw, 62px);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--dark); margin-bottom: 22px;
+    }
+
+    .hero-h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--green) 0%, var(--green-ac) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 16.5px; line-height: 1.72;
+      color: var(--muted); max-width: 480px;
+      margin-bottom: 44px;
+    }
+
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--border); border-radius: 12px;
+      overflow: hidden; background: var(--white);
+      max-width: 460px;
+    }
+
+    .hero-stat {
+      padding: 18px 20px;
+      border-right: 1px solid var(--border);
+      transition: background 0.25s;
+    }
+
+    .hero-stat:hover { background: var(--green-lt); }
+    .hero-stat:last-child { border-right: none; }
+
+    .hero-stat strong {
+      display: block; font-size: 22px; font-weight: 800;
+      color: var(--dark); letter-spacing: -0.025em; line-height: 1;
+    }
+
+    .hero-stat span { font-size: 11.5px; color: var(--muted); display: block; margin-top: 5px; }
+
+    /* ── HERO FORM ── */
+    .hero-form-wrap {
+      background: var(--white);
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 36px 30px 40px;
+      margin-bottom: 56px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.07);
+      transform-style: preserve-3d;
+      transition: box-shadow 0.4s;
+    }
+
+    .hero-form-wrap:hover {
+      box-shadow: 0 12px 60px rgba(27,94,42,0.12);
+    }
+
+    .form-header { margin-bottom: 24px; }
+
+    .form-top-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 8px;
+    }
+
+    .form-header h2 { font-size: 19px; font-weight: 700; color: var(--dark); line-height: 1.25; letter-spacing: -0.01em; }
+
+    .form-group { margin-bottom: 13px; }
+
+    .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; }
+
+    .form-group input,
+    .form-group select {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px; color: var(--text);
+      background: var(--cream); outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s, transform 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--green); background: var(--white);
+      box-shadow: 0 0 0 3px rgba(27,94,42,0.09);
+      transform: translateY(-1px);
+    }
+
+    .form-submit {
+      width: 100%; padding: 15px;
+      background: var(--green); color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px; font-weight: 700;
+      border: none; border-radius: 8px; cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+
+    .form-submit::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 0; height: 0;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.4s ease-out, height 0.4s ease-out, opacity 0.4s;
+      opacity: 0;
+    }
+
+    .form-submit:hover {
+      background: var(--green-dk);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(27,94,42,0.3);
+    }
+
+    .form-submit:hover::after { width: 300px; height: 300px; opacity: 1; }
+    .form-submit:active { transform: translateY(0); }
+
+    .form-footer-note {
+      display: flex; align-items: center; gap: 6px;
+      justify-content: center; margin-top: 12px;
+      font-size: 11.5px; color: var(--muted);
+    }
+
+    .form-footer-note svg { width: 13px; height: 13px; color: var(--green); flex-shrink: 0; }
+
+    /* ── STATS BAND ── */
+    #stats {
+      background: var(--green);
+      padding: 64px 5%;
+      position: relative; overflow: hidden;
+    }
+
+    #stats::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 25% 50%, rgba(77,184,102,0.35) 0%, transparent 60%);
+      animation: glow-shift 5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow-shift {
+      from { transform: translateX(-5%); opacity: 0.7; }
+      to   { transform: translateX(5%);  opacity: 1; }
+    }
+
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      position: relative; z-index: 1;
+    }
+
+    .stat-block {
+      padding: 0 36px;
+      border-right: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .stat-block:first-child { padding-left: 0; }
+    .stat-block:last-child { border-right: none; }
+
+    .stat-big {
+      font-size: clamp(38px, 4vw, 56px);
+      font-weight: 800; letter-spacing: -0.035em;
+      color: #fff; line-height: 1; margin-bottom: 10px;
+    }
+
+    .stat-big em { font-style: normal; color: var(--green-ac); }
+
+    .stat-desc { font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.45; }
+
+    /* ── PARA QUIÉN ── */
+    #para-quien { padding: 100px 5%; background: var(--white); }
+
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+
+    .section-kicker {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 12px;
+      display: block;
+    }
+
+    .section-h2 {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800; letter-spacing: -0.025em;
+      color: var(--dark); line-height: 1.1; margin-bottom: 60px;
+    }
+
+    .profiles-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .profile-card {
+      background: var(--white); padding: 32px 28px;
+      transition: background 0.25s, transform 0.4s ease-out;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .profile-icon {
+      width: 44px; height: 44px;
+      background: var(--green-lt); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.25s;
+    }
+
+    .profile-card:hover .profile-icon { transform: scale(1.12) rotate(-3deg); background: rgba(27,94,42,0.12); }
+    .profile-icon svg { width: 22px; height: 22px; color: var(--green); }
+
+    .profile-card h3 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .profile-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── CÓMO FUNCIONA ── */
+    #como { padding: 100px 5%; background: var(--cream); }
+
+    .como-inner {
+      max-width: 960px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 88px; align-items: start;
+    }
+
+    .como-left { position: sticky; top: 100px; }
+    .como-left .section-h2 { margin-bottom: 18px; }
+    .como-desc { font-size: 15px; color: var(--muted); line-height: 1.78; max-width: 340px; }
+
+    .steps-list { list-style: none; }
+
+    .steps-list li {
+      display: flex; gap: 24px;
+      padding: 28px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .steps-list li:first-child { border-top: 1px solid var(--border); }
+
+    .step-n {
+      font-size: 12px; font-weight: 700; color: var(--green);
+      width: 22px; flex-shrink: 0; padding-top: 2px; letter-spacing: 0.02em;
+    }
+
+    .step-body h4 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .step-body p { font-size: 13.5px; color: var(--muted); line-height: 1.65; }
+
+    /* ── TIPOS DE CRÉDITO ── */
+    #creditos { padding: 100px 5%; background: var(--white); }
+
+    .creditos-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 60px; }
+
+    .cred-card {
+      border: 1.5px solid var(--border); border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.4s ease-out;
+      transform-style: preserve-3d;
+      will-change: transform;
+      position: relative; overflow: hidden;
+    }
+
+    .cred-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(27,94,42,0.06) 0%, transparent 70%);
+      opacity: 0; transition: opacity 0.4s;
+    }
+
+    .cred-card:hover::before { opacity: 1; }
+    .cred-card:hover { border-color: rgba(27,94,42,0.4); box-shadow: 0 8px 32px rgba(27,94,42,0.1); }
+
+    .cred-icon {
+      width: 40px; height: 40px;
+      background: var(--green-lt); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+
+    .cred-card:hover .cred-icon { transform: scale(1.1) rotate(-4deg); }
+    .cred-icon svg { width: 20px; height: 20px; color: var(--green); }
+
+    .cred-card h3 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .cred-card p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+
+    .cred-from {
+      font-size: 13px; font-weight: 700; color: var(--green);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .cred-from svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* ── BANCOS ── */
+    #bancos { padding: 84px 5%; background: var(--cream); text-align: center; }
+
+    .bancos-inner { max-width: 860px; margin: 0 auto; }
+    .bancos-inner .section-kicker { text-align: center; }
+    .bancos-inner .section-h2 { text-align: center; margin-bottom: 48px; }
+
+    .banks-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+
+    .bank-chip {
+      background: var(--white);
+      border: 1px solid var(--border); border-radius: 100px;
+      padding: 9px 20px;
+      font-size: 13px; font-weight: 500; color: var(--dark);
+      transition: border-color 0.25s, background 0.25s, transform 0.25s, box-shadow 0.25s;
+      cursor: default;
+    }
+
+    .bank-chip:hover {
+      border-color: var(--green); background: var(--green-lt);
+      transform: translateY(-2px); box-shadow: 0 4px 12px rgba(27,94,42,0.1);
+    }
+
+    /* ── TESTIMONIAL ── */
+    #testimonial {
+      padding: 100px 5%;
+      background: var(--green);
+      position: relative; overflow: hidden;
+    }
+
+    #testimonial::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 60%, rgba(77,184,102,0.22) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .test-inner { max-width: 780px; margin: 0 auto; text-align: center; position: relative; z-index: 1; }
+
+    .test-mark {
+      font-size: 120px; font-weight: 800;
+      color: rgba(255,255,255,0.1);
+      line-height: 0.65; margin-bottom: 36px;
+      font-style: italic; user-select: none;
+    }
+
+    .test-quote {
+      font-size: clamp(20px, 2.6vw, 28px);
+      font-weight: 600; color: #fff;
+      line-height: 1.42; letter-spacing: -0.01em;
+      margin-bottom: 32px;
+    }
+
+    .test-author { font-size: 13.5px; color: rgba(255,255,255,0.5); }
+    .test-author strong { display: block; font-size: 15px; color: rgba(255,255,255,0.85); font-weight: 600; margin-bottom: 3px; }
+
+    /* ── CTA ── */
+    #cta { padding: 104px 5%; background: var(--dark); text-align: center; }
+
+    #cta h2 {
+      font-size: clamp(30px, 4.5vw, 54px);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: #fff; line-height: 1.1; margin-bottom: 18px;
+    }
+
+    #cta h2 em { font-style: italic; color: var(--green-ac); }
+
+    #cta p {
+      font-size: 16px; color: rgba(255,255,255,0.5);
+      line-height: 1.7; margin-bottom: 40px;
+      max-width: 540px; margin-left: auto; margin-right: auto;
+    }
+
+    .cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    .cta-btn {
+      padding: 16px 40px; border-radius: 9px;
+      font-size: 15px; font-weight: 700; text-decoration: none;
+      transition: all 0.25s; letter-spacing: 0.01em;
+      position: relative; overflow: hidden;
+    }
+
+    .cta-btn.primary { background: var(--green-ac); color: var(--dark); }
+
+    .cta-btn.primary:hover {
+      background: #5DC975; transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(77,184,102,0.35);
+    }
+
+    .cta-btn.secondary {
+      background: transparent; color: rgba(255,255,255,0.65);
+      border: 1.5px solid rgba(255,255,255,0.22);
+    }
+
+    .cta-btn.secondary:hover { border-color: rgba(255,255,255,0.5); color: #fff; transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 36px 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-wordmark { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.45); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 12.5px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.6); }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1000px) {
+      #hero { grid-template-columns: 1fr; min-height: auto; padding-bottom: 0; }
+      .hero-left { padding-bottom: 0; }
+      .hero-form-wrap { margin-bottom: 40px; }
+      .stats-inner { grid-template-columns: repeat(2,1fr); gap: 40px 0; }
+      .stat-block { padding: 0 24px; border-right: none; }
+      .stat-block:nth-child(odd) { border-right: 1px solid rgba(255,255,255,0.12); }
+      .profiles-grid { grid-template-columns: repeat(2,1fr); }
+      .como-inner { grid-template-columns: 1fr; gap: 48px; }
+      .como-left { position: static; }
+      .creditos-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 5%; height: 60px; }
+      .nav-links { display: none; }
+      .nav-phone { font-size: 12px; padding: 9px 16px; }
+      #hero { padding: 48px 5% 0; gap: 32px; }
+      .hero-h1 { font-size: 36px; }
+      .hero-sub { font-size: 15px; }
+      .hero-stats { grid-template-columns: 1fr; border-radius: 10px; }
+      .hero-stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .hero-stat:last-child { border-bottom: none; }
+      .hero-form-wrap { padding: 28px 20px; }
+      #stats { padding: 48px 5%; }
+      .stat-block:nth-child(odd) { border-right: none; }
+      .stats-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .stat-big { font-size: 32px; }
+      #para-quien, #como, #creditos, #bancos, #testimonial { padding: 64px 5%; }
+      .profiles-grid { grid-template-columns: 1fr; }
+      .cta-group { flex-direction: column; align-items: stretch; }
+      .cta-btn { text-align: center; }
+      footer { flex-direction: column; gap: 20px; }
+      .footer-links { flex-wrap: wrap; gap: 16px; }
+    }
+
+    /* Disable tilt on touch devices */
+    @media (pointer: coarse) {
+      .profile-card, .cred-card, .hero-form-wrap { transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── PAGE LOADER ── -->
+<div id="page-loader">
+  <span class="loader-wordmark">MonteCapital</span>
+  <div class="loader-bar" id="loader-bar"></div>
+</div>
+
+<!-- ── NAV ── -->
+<nav id="main-nav">
+  <a href="#" class="nav-brand">
+    <div class="nav-logo-box">
+      <svg viewBox="0 0 24 24" fill="white">
+        <path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z"/>
+      </svg>
+    </div>
+    <span class="nav-wordmark">Monte<span>Capital</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#como">Cómo funciona</a>
+    <a href="#creditos">Tipos de crédito</a>
+    <a href="#bancos">Instituciones</a>
+  </div>
+  <a href="tel:+5200000000" class="nav-phone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.16 12 19.79 19.79 0 0 1 1.07 3.4 2 2 0 0 1 3.05 1.3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.09 9.21a16 16 0 0 0 5.7 5.7l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </svg>
+    Hablar con un asesor
+  </a>
+</nav>
+
+<!-- ── HERO ── -->
+<div id="hero-wrapper">
+  <canvas id="hero-canvas"></canvas>
+  <section id="hero">
+    <div class="hero-left">
+      <div class="hero-badge">Crédito PyME · Sin costo de asesoría</div>
+      <h1 class="hero-h1">
+        Tu empresa merece<br>
+        el crédito<br>
+        <em>correcto.</em>
+      </h1>
+      <p class="hero-sub">
+        Comparamos más de 30 instituciones financieras para encontrarte
+        las mejores condiciones — tasa, plazo y monto — sin cobrarte nada.
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong>72 hrs</strong>
+          <span>Respuesta inicial</span>
+        </div>
+        <div class="hero-stat">
+          <strong>$50k–$10M</strong>
+          <span>Monto disponible</span>
+        </div>
+        <div class="hero-stat">
+          <strong>30+</strong>
+          <span>Instituciones</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-form-wrap">
+      <div class="form-header">
+        <p class="form-top-label">Solicitud sin costo</p>
+        <h2>¿Cuánto necesita<br>tu empresa?</h2>
+      </div>
+      <div class="form-group">
+        <label>Nombre completo</label>
+        <input type="text" placeholder="Ej. Ana Martínez">
+      </div>
+      <div class="form-group">
+        <label>Empresa</label>
+        <input type="text" placeholder="Nombre de tu empresa">
+      </div>
+      <div class="form-group">
+        <label>Teléfono</label>
+        <input type="tel" placeholder="+52 000 000 0000">
+      </div>
+      <div class="form-group">
+        <label>Monto requerido</label>
+        <select>
+          <option value="" disabled selected>Selecciona un rango</option>
+          <option>$50,000 – $200,000 MXN</option>
+          <option>$200,000 – $500,000 MXN</option>
+          <option>$500,000 – $2,000,000 MXN</option>
+          <option>Más de $2,000,000 MXN</option>
+        </select>
+      </div>
+      <button class="form-submit">Quiero que me contacten →</button>
+      <div class="form-footer-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Sin costo · Sin compromiso · Respuesta en 24 hrs
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ── STATS BAND ── -->
+<section id="stats">
+  <div class="stats-inner">
+    <div class="stat-block">
+      <div class="stat-big" id="c1"><em>+</em>0</div>
+      <p class="stat-desc">Empresas financiadas<br>en México</p>
+    </div>
+    <div class="stat-block">
+      <div class="stat-big" id="c2">$<em>0</em>B</div>
+      <p class="stat-desc">MXN gestionados<br>en crédito</p>
+    </div>
+    <div class="stat-block">
+      <div class="stat-big" id="c3"><em>0</em>+</div>
+      <p class="stat-desc">Instituciones financieras<br>aliadas</p>
+    </div>
+    <div class="stat-block">
+      <div class="stat-big" id="c4"><em>0</em> años</div>
+      <p class="stat-desc">De experiencia en<br>crédito empresarial</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── PARA QUIÉN ── -->
+<section id="para-quien">
+  <div class="section-inner">
+    <span class="section-kicker">¿Para quién es?</span>
+    <h2 class="section-h2">Crédito para<br>todos los sectores.</h2>
+    <div class="profiles-grid">
+      <div class="profile-card">
+        <div class="profile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+        <h3>Comercio y Retail</h3>
+        <p>Capital para inventario, expansión de local o aprovechar temporadas altas sin descapitalizarte.</p>
+      </div>
+      <div class="profile-card">
+        <div class="profile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="7" height="9"/><rect x="9" y="12" width="7" height="9"/>
+            <rect x="16" y="6" width="6" height="6"/><path d="M2 21h20"/>
+          </svg>
+        </div>
+        <h3>Manufactura</h3>
+        <p>Crédito para maquinaria, equipos y expansión de capacidad productiva sin interrumpir operaciones.</p>
+      </div>
+      <div class="profile-card">
+        <div class="profile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3>Construcción</h3>
+        <p>Financiamiento para proyectos, compra de materiales y equipo pesado con plazos que se adaptan a tu obra.</p>
+      </div>
+      <div class="profile-card">
+        <div class="profile-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+          </svg>
+        </div>
+        <h3>Servicios</h3>
+        <p>Liquidez para operación, nómina y crecimiento del equipo sin afectar el flujo de caja del mes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CÓMO FUNCIONA ── -->
+<section id="como">
+  <div class="como-inner">
+    <div class="como-left">
+      <span class="section-kicker">El proceso</span>
+      <h2 class="section-h2">Tres pasos.<br>Sin papeleo.</h2>
+      <p class="como-desc">Nos encargamos de todo para que tú te concentres en tu negocio. Sin burocracia, sin visitas al banco, sin sorpresas.</p>
+    </div>
+    <ul class="steps-list">
+      <li>
+        <span class="step-n">01</span>
+        <div class="step-body">
+          <h4>Llena el formulario</h4>
+          <p>Cuéntanos sobre tu empresa y cuánto necesitas. Toma menos de 2 minutos — sin documentos todavía.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-n">02</span>
+        <div class="step-body">
+          <h4>Recibe opciones en 72 hrs</h4>
+          <p>Analizamos tu perfil y comparamos más de 30 instituciones para presentarte las mejores condiciones disponibles.</p>
+        </div>
+      </li>
+      <li>
+        <span class="step-n">03</span>
+        <div class="step-body">
+          <h4>Elige y accede a tu crédito</h4>
+          <p>Un asesor te acompaña hasta el desembolso. Elegimos juntos la opción que mejor se adapta a tu empresa.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ── TIPOS DE CRÉDITO ── -->
+<section id="creditos">
+  <div class="section-inner">
+    <span class="section-kicker">Productos</span>
+    <h2 class="section-h2">Tipos de crédito<br>para tu empresa.</h2>
+    <div class="creditos-grid">
+      <div class="cred-card">
+        <div class="cred-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3>Capital de Trabajo</h3>
+        <p>Liquidez inmediata para cubrir operaciones, pagar nómina y aprovechar oportunidades de negocio sin esperar.</p>
+        <div class="cred-from">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Desde $50,000 MXN
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+        </div>
+        <h3>Equipamiento</h3>
+        <p>Financia maquinaria, vehículos o equipo tecnológico sin descapitalizarte ni comprometer el flujo mensual.</p>
+        <div class="cred-from">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Desde $150,000 MXN
+        </div>
+      </div>
+      <div class="cred-card">
+        <div class="cred-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3>Crédito Inmobiliario</h3>
+        <p>Compra, construcción o remodelación de local comercial, bodega o nave industrial a largo plazo.</p>
+        <div class="cred-from">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Desde $500,000 MXN
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BANCOS ── -->
+<section id="bancos">
+  <div class="bancos-inner">
+    <span class="section-kicker">Nuestros aliados</span>
+    <h2 class="section-h2">30+ instituciones.<br>Una sola gestión.</h2>
+    <div class="banks-grid">
+      <span class="bank-chip">BBVA</span>
+      <span class="bank-chip">Banorte</span>
+      <span class="bank-chip">Santander</span>
+      <span class="bank-chip">HSBC</span>
+      <span class="bank-chip">Banamex</span>
+      <span class="bank-chip">Scotiabank</span>
+      <span class="bank-chip">BanBajío</span>
+      <span class="bank-chip">Inbursa</span>
+      <span class="bank-chip">NAFIN</span>
+      <span class="bank-chip">Multiva</span>
+      <span class="bank-chip">Mifel</span>
+      <span class="bank-chip">FIRA</span>
+      <span class="bank-chip">+ más</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIAL ── -->
+<section id="testimonial">
+  <div class="test-inner">
+    <div class="test-mark">"</div>
+    <p class="test-quote">
+      Conseguimos el crédito en dos semanas. MonteCapital nos consiguió una tasa que ningún banco nos había ofrecido directamente — y sin pagar un peso de comisión.
+    </p>
+    <div class="test-author">
+      <strong>Roberto Salinas</strong>
+      Director General · Grupo Industrial Salinas
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section id="cta">
+  <h2>Tu empresa no puede<br>esperar al <em>crédito correcto.</em></h2>
+  <p>Agenda una llamada gratuita con un asesor y recibe tu diagnóstico financiero sin ningún compromiso.</p>
+  <div class="cta-group">
+    <a href="#hero" class="cta-btn primary">Solicitar ahora — sin costo</a>
+    <a href="https://wa.me/520000000000" class="cta-btn secondary">Escribir por WhatsApp</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-logo-box" style="width:28px;height:28px;">
+      <svg viewBox="0 0 24 24" fill="white" style="width:14px;height:14px;">
+        <path d="M12 2L4 6v6c0 5.55 3.84 10.74 8 12 4.16-1.26 8-6.45 8-12V6l-8-4z"/>
+      </svg>
+    </div>
+    <span class="footer-wordmark">MonteCapital</span>
+  </div>
+  <div class="footer-links">
+    <a href="#">Aviso de privacidad</a>
+    <a href="#">Términos de uso</a>
+    <a href="#">Contacto</a>
+  </div>
+  <span class="footer-copy">© 2025 MonteCapital</span>
+</footer>
+
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ─────────────────────────────────────────
+     PAGE LOADER
+  ───────────────────────────────────────── */
+  const loaderBar = document.getElementById('loader-bar');
+  const loader    = document.getElementById('page-loader');
+
+  // Animate loader bar progress
+  gsap.to(loaderBar, { width: '100%', duration: 0.55, ease: 'power2.inOut' });
+
+  // Then collapse the curtain upward
+  gsap.to(loader, {
+    scaleY: 0,
+    transformOrigin: 'top center',
+    duration: 0.65,
+    ease: 'power3.in',
+    delay: 0.65,
+    onComplete: () => {
+      loader.style.display = 'none';
+      launchHero();
+    }
+  });
+
+  /* ─────────────────────────────────────────
+     THREE.JS — HERO BACKGROUND
+  ───────────────────────────────────────── */
+  (function initThree() {
+    const canvas  = document.getElementById('hero-canvas');
+    const wrapper = document.getElementById('hero-wrapper');
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(wrapper.offsetWidth, wrapper.offsetHeight);
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, wrapper.offsetWidth / wrapper.offsetHeight, 0.1, 100);
+    camera.position.z = 8;
+
+    // Large torus — dark green wireframe
+    const torusMesh = new THREE.Mesh(
+      new THREE.TorusGeometry(2.4, 0.55, 14, 52),
+      new THREE.MeshBasicMaterial({ color: 0x1B5E2A, wireframe: true, transparent: true, opacity: 0.13 })
+    );
+    torusMesh.position.set(3.8, -0.4, 0);
+    torusMesh.rotation.x = 0.35;
+    scene.add(torusMesh);
+
+    // Icosahedron — lighter green
+    const icoMesh = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.1, 1),
+      new THREE.MeshBasicMaterial({ color: 0x4DB866, wireframe: true, transparent: true, opacity: 0.09 })
+    );
+    icoMesh.position.set(-3.8, 2.2, -2);
+    scene.add(icoMesh);
+
+    // Small dodecahedron — accent
+    const dodMesh = new THREE.Mesh(
+      new THREE.DodecahedronGeometry(0.6, 0),
+      new THREE.MeshBasicMaterial({ color: 0x1B5E2A, wireframe: true, transparent: true, opacity: 0.11 })
+    );
+    dodMesh.position.set(1.5, 2.5, -1);
+    scene.add(dodMesh);
+
+    // Mouse parallax target
+    const mouse = { x: 0, y: 0 };
+    window.addEventListener('mousemove', (e) => {
+      mouse.x =  (e.clientX / window.innerWidth  - 0.5) * 2;
+      mouse.y = -(e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      torusMesh.rotation.x += 0.0025;
+      torusMesh.rotation.y += 0.004;
+      icoMesh.rotation.x   -= 0.003;
+      icoMesh.rotation.y   += 0.0035;
+      dodMesh.rotation.x   += 0.005;
+      dodMesh.rotation.z   += 0.003;
+
+      // Gentle camera parallax
+      camera.position.x += (mouse.x * 0.4 - camera.position.x) * 0.04;
+      camera.position.y += (mouse.y * 0.25 - camera.position.y) * 0.04;
+      camera.lookAt(scene.position);
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // GSAP: fade in 3D canvas with hero
+    gsap.from(canvas, { opacity: 0, duration: 1.5, delay: 1.2 });
+
+    // Resize
+    window.addEventListener('resize', () => {
+      renderer.setSize(wrapper.offsetWidth, wrapper.offsetHeight);
+      camera.aspect = wrapper.offsetWidth / wrapper.offsetHeight;
+      camera.updateProjectionMatrix();
+    });
+  })();
+
+  /* ─────────────────────────────────────────
+     HERO GSAP TIMELINE
+  ───────────────────────────────────────── */
+  function launchHero() {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    tl
+      .to('nav', { opacity: 1, y: 0, duration: 0.6 }, 0)
+      .from('.hero-badge',     { y: 32, opacity: 0, duration: 0.7 }, 0.1)
+      .from('.hero-h1',        { y: 52, opacity: 0, duration: 0.9 }, 0.22)
+      .from('.hero-sub',       { y: 28, opacity: 0, duration: 0.8 }, 0.38)
+      .from('.hero-stats',     { y: 18, opacity: 0, duration: 0.7 }, 0.52)
+      .from('.hero-form-wrap', { x: 44, opacity: 0, duration: 0.95, ease: 'power2.out' }, 0.28);
+  }
+
+  /* ─────────────────────────────────────────
+     STATS COUNTERS + SECTION REVEAL
+  ───────────────────────────────────────── */
+  const counters = [
+    { id: 'c1', to: 1200, render: n => `<em>+</em>${Math.round(n).toLocaleString()}` },
+    { id: 'c2', to: 4.5,  render: n => `$<em>${n.toFixed(1)}</em>B` },
+    { id: 'c3', to: 30,   render: n => `<em>${Math.round(n)}</em>+` },
+    { id: 'c4', to: 15,   render: n => `<em>${Math.round(n)}</em> años` },
+  ];
+
+  let countersStarted = false;
+
+  ScrollTrigger.create({
+    trigger: '#stats',
+    start: 'top 78%',
+    onEnter: () => {
+      if (countersStarted) return;
+      countersStarted = true;
+
+      // Stat blocks slide up
+      gsap.from('.stat-block', {
+        y: 36, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out'
+      });
+
+      // Counter animation
+      counters.forEach(({ id, to, render }, i) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const obj = { val: 0 };
+        gsap.to(obj, {
+          val: to, duration: 2.2, delay: i * 0.1, ease: 'power2.out',
+          onUpdate: () => { el.innerHTML = render(obj.val); }
+        });
+      });
+    }
+  });
+
+  /* ─────────────────────────────────────────
+     SCROLL TRIGGERS — SECTIONS
+  ───────────────────────────────────────── */
+
+  // Section headings
+  gsap.utils.toArray('.section-h2').forEach(el => {
+    gsap.from(el, {
+      y: 40, opacity: 0, duration: 0.85, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 82%', once: true }
+    });
+  });
+
+  gsap.utils.toArray('.section-kicker').forEach(el => {
+    gsap.from(el, {
+      y: 12, opacity: 0, duration: 0.6, ease: 'power3.out',
+      scrollTrigger: { trigger: el, start: 'top 84%', once: true }
+    });
+  });
+
+  // Profile cards — stagger from bottom
+  gsap.from('.profile-card', {
+    y: 48, opacity: 0, duration: 0.75, stagger: 0.1, ease: 'power3.out',
+    scrollTrigger: { trigger: '.profiles-grid', start: 'top 80%', once: true }
+  });
+
+  // Steps — stagger from left
+  gsap.from('.steps-list li', {
+    x: -28, opacity: 0, duration: 0.7, stagger: 0.14, ease: 'power3.out',
+    scrollTrigger: { trigger: '.steps-list', start: 'top 80%', once: true }
+  });
+
+  // Sticky "como" left block
+  gsap.from('.como-left', {
+    y: 32, opacity: 0, duration: 0.8, ease: 'power3.out',
+    scrollTrigger: { trigger: '#como', start: 'top 75%', once: true }
+  });
+
+  // Credit cards — stagger + small scale
+  gsap.from('.cred-card', {
+    y: 52, opacity: 0, scale: 0.97, duration: 0.8, stagger: 0.13, ease: 'power3.out',
+    scrollTrigger: { trigger: '.creditos-grid', start: 'top 80%', once: true }
+  });
+
+  // Bank chips — scale bounce
+  ScrollTrigger.batch('.bank-chip', {
+    onEnter: batch => gsap.from(batch, {
+      scale: 0.75, opacity: 0, duration: 0.5, stagger: 0.045, ease: 'back.out(1.6)'
+    }),
+    start: 'top 86%',
+    once: true
+  });
+
+  // Testimonial — scale up
+  gsap.from('.test-inner', {
+    y: 44, opacity: 0, duration: 1, ease: 'power3.out',
+    scrollTrigger: { trigger: '#testimonial', start: 'top 75%', once: true }
+  });
+
+  // CTA — dramatic entrance
+  const ctaTl = gsap.timeline({
+    scrollTrigger: { trigger: '#cta', start: 'top 75%', once: true }
+  });
+  ctaTl
+    .from('#cta h2', { y: 40, opacity: 0, duration: 0.9, ease: 'power3.out' })
+    .from('#cta p',  { y: 24, opacity: 0, duration: 0.7, ease: 'power3.out' }, '-=0.5')
+    .from('.cta-btn', { y: 18, opacity: 0, duration: 0.6, stagger: 0.1, ease: 'back.out(1.4)' }, '-=0.4');
+
+  // Footer
+  gsap.from('footer', {
+    opacity: 0, duration: 0.8, ease: 'power3.out',
+    scrollTrigger: { trigger: 'footer', start: 'top 90%', once: true }
+  });
+
+  /* ─────────────────────────────────────────
+     3D TILT ON CARDS
+  ───────────────────────────────────────── */
+  function applyTilt(selector, maxAngle) {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    document.querySelectorAll(selector).forEach(el => {
+      el.addEventListener('mousemove', e => {
+        const r = el.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width  - 0.5) * 2;
+        const y = ((e.clientY - r.top)  / r.height - 0.5) * 2;
+        el.style.transition = 'transform 0.08s linear, box-shadow 0.3s';
+        el.style.transform  = `perspective(900px) rotateX(${-y * maxAngle}deg) rotateY(${x * maxAngle}deg) translateZ(10px)`;
+      });
+      el.addEventListener('mouseleave', () => {
+        el.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s';
+        el.style.transform  = 'perspective(900px) rotateX(0) rotateY(0) translateZ(0)';
+      });
+    });
+  }
+
+  applyTilt('.profile-card',  7);
+  applyTilt('.cred-card',     7);
+  applyTilt('.hero-form-wrap', 4);
+
+  /* ─────────────────────────────────────────
+     MAGNETIC BUTTONS
+  ───────────────────────────────────────── */
+  function applyMagnetic(selector) {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    document.querySelectorAll(selector).forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r   = btn.getBoundingClientRect();
+        const dx  = e.clientX - (r.left + r.width  / 2);
+        const dy  = e.clientY - (r.top  + r.height / 2);
+        gsap.to(btn, { x: dx * 0.25, y: dy * 0.25, duration: 0.4, ease: 'power2.out' });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
+      });
+    });
+  }
+
+  applyMagnetic('.nav-phone');
+  applyMagnetic('.form-submit');
+  applyMagnetic('.cta-btn');
+
+  /* ─────────────────────────────────────────
+     NAV SCROLL
+  ───────────────────────────────────────── */
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  });
+</script>
+</body>
+</html>

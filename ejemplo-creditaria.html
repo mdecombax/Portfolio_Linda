@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crédito PyME en 72 horas — FinAsesores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --orange:    #F07B1D;
+      --orange-dk: #D96A10;
+      --navy:      #0D1B2A;
+      --navy-md:   #1C3351;
+      --white:     #FFFFFF;
+      --gray-50:   #F7F8FA;
+      --gray-100:  #EDEEF2;
+      --gray-400:  #9CA3AF;
+      --gray-600:  #4B5563;
+      --text:      #111827;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--navy);
+      padding: 0 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 64px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-mark {
+      width: 32px;
+      height: 32px;
+      background: var(--orange);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-logo-mark svg { width: 18px; height: 18px; fill: #fff; }
+
+    .nav-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 0.01em;
+    }
+
+    .nav-name span {
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--orange);
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: var(--orange-dk); }
+
+    .nav-cta svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── HERO ── */
+    #hero {
+      background: var(--navy);
+      padding: 80px 5% 0;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 60px;
+      align-items: end;
+      min-height: 640px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(240,123,29,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-left {
+      padding-bottom: 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(240,123,29,0.15);
+      border: 1px solid rgba(240,123,29,0.3);
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--orange);
+      border-radius: 50%;
+    }
+
+    .hero-title {
+      font-size: clamp(36px, 4.5vw, 58px);
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--white);
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.65;
+      max-width: 480px;
+      margin-bottom: 40px;
+    }
+
+    .hero-proof {
+      display: flex;
+      gap: 32px;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .hero-stat span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+      display: block;
+    }
+
+    /* ── HERO FORM ── */
+    .hero-form-wrap {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 36px 32px 40px;
+      margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 -20px 60px rgba(0,0,0,0.25);
+    }
+
+    .form-label-top {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+
+    .form-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.25;
+      margin-bottom: 24px;
+    }
+
+    .form-field {
+      margin-bottom: 14px;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--gray-600);
+      margin-bottom: 6px;
+      letter-spacing: 0.02em;
+    }
+
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--gray-100);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--gray-50);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus {
+      border-color: var(--orange);
+      background: var(--white);
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 15px;
+      background: var(--orange);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 6px;
+      letter-spacing: 0.01em;
+    }
+
+    .form-submit:hover { background: var(--orange-dk); }
+    .form-submit:active { transform: scale(0.99); }
+
+    .form-disclaimer {
+      font-size: 11px;
+      color: var(--gray-400);
+      text-align: center;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* ── TRUST BAR ── */
+    #trust {
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-100);
+      padding: 20px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .trust-item svg {
+      width: 18px; height: 18px;
+      color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    /* ── HOW IT WORKS ── */
+    #como {
+      padding: 96px 5%;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 60px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-100);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .step {
+      background: var(--white);
+      padding: 40px 32px;
+    }
+
+    .step-num {
+      width: 40px; height: 40px;
+      background: var(--orange);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .step h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.25;
+    }
+
+    .step p {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.65;
+    }
+
+    /* ── BENEFITS ── */
+    #beneficios {
+      background: var(--navy);
+      padding: 96px 5%;
+    }
+
+    .beneficios-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .beneficios-left .section-title { color: var(--white); }
+    .beneficios-left .section-eyebrow { color: var(--orange); }
+
+    .beneficios-left p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.75;
+      margin-bottom: 36px;
+    }
+
+    .beneficios-list {
+      list-style: none;
+    }
+
+    .beneficios-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      line-height: 1.5;
+    }
+
+    .beneficios-list li:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
+
+    .check-icon {
+      width: 22px; height: 22px;
+      background: rgba(240,123,29,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .check-icon svg { width: 12px; height: 12px; color: var(--orange); }
+
+    /* ── TIPOS DE CREDITO ── */
+    .creditos-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .credito-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .credito-card:hover {
+      border-color: rgba(240,123,29,0.4);
+      background: rgba(240,123,29,0.05);
+    }
+
+    .credito-info h4 {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .credito-info p {
+      font-size: 13px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    .credito-amount {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--orange);
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .credito-amount span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.3);
+      margin-top: 2px;
+    }
+
+    /* ── BANKS ── */
+    #bancos {
+      padding: 80px 5%;
+      background: var(--gray-50);
+      text-align: center;
+    }
+
+    .bancos-inner { max-width: 1000px; margin: 0 auto; }
+
+    .bancos-inner .section-title { text-align: center; margin-bottom: 48px; }
+
+    .bancos-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .banco-pill {
+      background: var(--white);
+      border: 1px solid var(--gray-100);
+      border-radius: 100px;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--navy);
+    }
+
+    /* ── CTA SECTION ── */
+    #cta {
+      padding: 96px 5%;
+      background: var(--orange);
+      text-align: center;
+    }
+
+    #cta h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    #cta p {
+      font-size: 17px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      text-decoration: none;
+      padding: 16px 40px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.2s;
+      letter-spacing: 0.01em;
+    }
+
+    .cta-btn.primary {
+      background: var(--white);
+      color: var(--orange);
+    }
+
+    .cta-btn.primary:hover { background: var(--gray-50); }
+
+    .cta-btn.secondary {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.5);
+    }
+
+    .cta-btn.secondary:hover { border-color: #fff; background: rgba(255,255,255,0.1); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--navy);
+      padding: 40px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-brand-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(255,255,255,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      #hero {
+        grid-template-columns: 1fr;
+        padding: 52px 5% 0;
+        min-height: auto;
+        gap: 32px;
+      }
+      .hero-left { padding-bottom: 0; }
+      .hero-form-wrap {
+        border-radius: 16px;
+        margin-top: 0;
+        margin-bottom: 40px;
+      }
+      #hero::before { display: none; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .beneficios-inner { grid-template-columns: 1fr; gap: 48px; }
+      #trust { gap: 16px; flex-direction: column; align-items: flex-start; padding: 20px 5%; }
+      footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; flex-wrap: wrap; }
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 5%; height: 56px; }
+      .nav-name { display: none; }
+
+      /* Hero */
+      #hero { padding: 44px 5% 0; gap: 28px; }
+      .hero-badge { font-size: 11px; padding: 5px 12px; }
+      .hero-title { font-size: 34px; }
+      .hero-sub { font-size: 15px; }
+      .hero-proof {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .hero-stat {
+        padding: 14px 10px;
+        border-right: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+      }
+      .hero-stat:last-child { border-right: none; }
+      .hero-stat strong { font-size: 18px; }
+      .hero-stat span { font-size: 10px; }
+
+      /* Form */
+      .hero-form-wrap { padding: 28px 20px 28px; margin-bottom: 36px; }
+      .form-title { font-size: 18px; }
+
+      /* Trust */
+      #trust { flex-direction: row; flex-wrap: wrap; gap: 12px; padding: 16px 5%; }
+      .trust-item { font-size: 12px; }
+
+      /* Sections */
+      #como { padding: 64px 5%; }
+      #como .section-title { font-size: 28px; margin-bottom: 32px; }
+      .step { padding: 28px 24px; }
+
+      #beneficios { padding: 64px 5%; }
+      .beneficios-inner { gap: 40px; }
+      .beneficios-left .section-title { font-size: 28px; }
+
+      #bancos { padding: 64px 5%; }
+      #bancos .section-title { font-size: 28px; margin-bottom: 32px; }
+      .banco-pill { font-size: 12px; padding: 8px 14px; }
+
+      #cta { padding: 64px 5%; }
+      #cta h2 { font-size: 28px; }
+      .cta-btns { flex-direction: column; align-items: stretch; }
+      .cta-btn { text-align: center; padding: 16px 24px; }
+
+      footer { padding: 32px 5%; gap: 20px; }
+      .footer-links { gap: 16px; }
+    }
+
+    /* ── ANIMATIONS ── */
+
+    /* Hero load — éléments de gauche */
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes heroFadeRight {
+      from { opacity: 0; transform: translateX(32px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes navSlideDown {
+      from { opacity: 0; transform: translateY(-100%); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    nav {
+      animation: navSlideDown 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-badge {
+      animation: heroFadeUp 0.6s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-title {
+      animation: heroFadeUp 0.7s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-sub {
+      animation: heroFadeUp 0.7s 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-proof {
+      animation: heroFadeUp 0.7s 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .hero-form-wrap {
+      animation: heroFadeRight 0.8s 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    /* Scroll reveal — état initial */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Delays pour stagger */
+    .reveal[data-delay="1"] { transition-delay: 0.08s; }
+    .reveal[data-delay="2"] { transition-delay: 0.16s; }
+    .reveal[data-delay="3"] { transition-delay: 0.24s; }
+    .reveal[data-delay="4"] { transition-delay: 0.32s; }
+    .reveal[data-delay="5"] { transition-delay: 0.40s; }
+
+    /* Trust bar items */
+    .trust-item {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .trust-item.visible { opacity: 1; transform: translateY(0); }
+
+    /* Banco pills */
+    .banco-pill {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.2s, background 0.2s;
+    }
+
+    .banco-pill.visible { opacity: 1; transform: scale(1); }
+
+    /* Counter animation target */
+    .stat-num { display: inline-block; }
+
+    /* Nav scroll effect */
+    nav.scrolled {
+      background: rgba(13, 27, 42, 0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* Hover lift on cards */
+    .step {
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .step:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+    }
+
+    .credito-card {
+      transition: border-color 0.25s, background 0.25s,
+                  transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .credito-card:hover { transform: translateX(4px); }
+
+    /* CTA section — pulse on primary btn */
+    @keyframes subtlePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.25); }
+      50%       { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+    }
+
+    .cta-btn.primary {
+      animation: subtlePulse 2.5s 1.5s ease-in-out infinite;
+    }
+
+    /* Form field focus animation */
+    .form-field input,
+    .form-field select {
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus {
+      box-shadow: 0 0 0 3px rgba(240,123,29,0.15);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7l8-4.32z"/></svg>
+    </div>
+    <span class="nav-name">Fin<span>Asesores</span></span>
+  </a>
+  <a href="tel:+520000000000" class="nav-cta">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.16 12 19.79 19.79 0 0 1 1.07 3.4 2 2 0 0 1 3.05 1.3h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.09 9.21a16 16 0 0 0 5.7 5.7l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+    </svg>
+    Llamar ahora
+  </a>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-left">
+    <div class="hero-badge">Crédito PyME · Tu ciudad</div>
+    <h1 class="hero-title">
+      Consigue el crédito<br>
+      que tu empresa<br>
+      <em>necesita hoy.</em>
+    </h1>
+    <p class="hero-sub">
+      Comparamos más de 30 instituciones financieras para encontrarte
+      la mejor opción — sin burocracia, sin costo de asesoría.
+    </p>
+    <div class="hero-proof">
+      <div class="hero-stat">
+        <strong>72 hrs</strong>
+        <span>Respuesta inicial</span>
+      </div>
+      <div class="hero-stat">
+        <strong>$50k – $10M</strong>
+        <span>Monto disponible</span>
+      </div>
+      <div class="hero-stat">
+        <strong>30+</strong>
+        <span>Instituciones</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-form-wrap">
+    <p class="form-label-top">Solicitar información</p>
+    <h2 class="form-title">¿Cuánto necesita<br>tu empresa?</h2>
+
+    <div class="form-field">
+      <label>Nombre completo</label>
+      <input type="text" placeholder="Ej. Carlos Hernández">
+    </div>
+    <div class="form-field">
+      <label>Empresa</label>
+      <input type="text" placeholder="Nombre de tu empresa">
+    </div>
+    <div class="form-field">
+      <label>Teléfono</label>
+      <input type="tel" placeholder="+52 000 000 0000">
+    </div>
+    <div class="form-field">
+      <label>Monto que necesitas</label>
+      <select>
+        <option value="" disabled selected>Selecciona un rango</option>
+        <option>$50,000 – $200,000 MXN</option>
+        <option>$200,000 – $500,000 MXN</option>
+        <option>$500,000 – $2,000,000 MXN</option>
+        <option>Más de $2,000,000 MXN</option>
+      </select>
+    </div>
+    <button class="form-submit">Quiero que me contacten →</button>
+    <p class="form-disclaimer">Sin costo · Sin compromiso · Respuesta en menos de 24 hrs</p>
+  </div>
+</section>
+
+<!-- ── TRUST BAR ── -->
+<div id="trust">
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+    </svg>
+    +15 años de experiencia en crédito empresarial
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+    </svg>
+    Bróker certificado · ESR
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+    </svg>
+    Sin costo de asesoría
+  </div>
+  <div class="trust-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+    </svg>
+    +1,000 empresas financiadas
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section id="como">
+  <p class="section-eyebrow reveal">El proceso</p>
+  <h2 class="section-title reveal" data-delay="1">Así de simple.</h2>
+
+  <div class="steps-grid">
+    <div class="step reveal" data-delay="1">
+      <div class="step-num">1</div>
+      <h3>Llena el formulario</h3>
+      <p>Cuéntanos cuánto necesitas y en qué plazo. Toma menos de 2 minutos.</p>
+    </div>
+    <div class="step reveal" data-delay="2">
+      <div class="step-num">2</div>
+      <h3>Recibe tu diagnóstico</h3>
+      <p>Un asesor te contacta en menos de 24 horas con las mejores opciones disponibles para tu empresa.</p>
+    </div>
+    <div class="step reveal" data-delay="3">
+      <div class="step-num">3</div>
+      <h3>Accede a tu crédito</h3>
+      <p>Elegimos juntos la opción ideal y gestionamos todo el proceso contigo — sin sorpresas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── BENEFITS + TIPOS ── -->
+<section id="beneficios">
+  <div class="beneficios-inner">
+    <div class="beneficios-left">
+      <p class="section-eyebrow reveal">¿Por qué FinAsesores?</p>
+      <h2 class="section-title reveal" data-delay="1">Trabajamos<br>para ti,<br>no para el banco.</h2>
+      <p class="reveal" data-delay="2">Somos intermediarios independientes. Nuestro trabajo es conseguirte la mejor condición — tasa, plazo y monto — sin cobrarte nada por eso.</p>
+      <ul class="beneficios-list">
+        <li class="reveal" data-delay="1">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Comparamos más de 30 instituciones en paralelo
+        </li>
+        <li class="reveal" data-delay="2">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Cero costo de asesoría — nos paga la institución
+        </li>
+        <li class="reveal" data-delay="3">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Respuesta inicial en 72 horas hábiles
+        </li>
+        <li class="reveal" data-delay="4">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Montos desde $50,000 hasta más de $10,000,000 MXN
+        </li>
+        <li class="reveal" data-delay="5">
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          Acompañamiento completo hasta el desembolso
+        </li>
+      </ul>
+    </div>
+
+    <div class="creditos-grid">
+      <div class="credito-card reveal" data-delay="1">
+        <div class="credito-info">
+          <h4>Capital de Trabajo</h4>
+          <p>Liquidez inmediata para operar y crecer sin interrupciones</p>
+        </div>
+        <div class="credito-amount">
+          Desde $50k
+          <span>MXN</span>
+        </div>
+      </div>
+      <div class="credito-card reveal" data-delay="2">
+        <div class="credito-info">
+          <h4>Equipamiento y Maquinaria</h4>
+          <p>Financia activos productivos sin descapitalizarte</p>
+        </div>
+        <div class="credito-amount">
+          Hasta $5M
+          <span>MXN</span>
+        </div>
+      </div>
+      <div class="credito-card reveal" data-delay="3">
+        <div class="credito-info">
+          <h4>Expansión y Proyectos</h4>
+          <p>Fondeo para nuevas sucursales, contratos o inversión estratégica</p>
+        </div>
+        <div class="credito-amount">
+          Hasta $10M
+          <span>MXN</span>
+        </div>
+      </div>
+      <div class="credito-card reveal" data-delay="4">
+        <div class="credito-info">
+          <h4>Crédito Simple / Revolvente</h4>
+          <p>Línea disponible para usarla cuando tu negocio la necesite</p>
+        </div>
+        <div class="credito-amount">
+          Flexible
+          <span>a tu medida</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BANCOS ── -->
+<section id="bancos">
+  <div class="bancos-inner">
+    <p class="section-eyebrow reveal" style="text-align:center;">Instituciones con las que trabajamos</p>
+    <h2 class="section-title reveal" data-delay="1">30+ opciones.<br>Una sola gestión.</h2>
+    <div class="bancos-grid">
+      <div class="banco-pill">Banco A</div>
+      <div class="banco-pill">Banco B</div>
+      <div class="banco-pill">Fintech 1</div>
+      <div class="banco-pill">Fintech 2</div>
+      <div class="banco-pill">Fintech 3</div>
+      <div class="banco-pill">Fintech 4</div>
+      <div class="banco-pill">Fintech 5</div>
+      <div class="banco-pill">Fintech 6</div>
+      <div class="banco-pill">Banco C</div>
+      <div class="banco-pill">Banco D</div>
+      <div class="banco-pill">Banco E</div>
+      <div class="banco-pill">Institución 1</div>
+      <div class="banco-pill">Institución 2</div>
+      <div class="banco-pill">Institución 3</div>
+      <div class="banco-pill">+ 20 más</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA FINAL ── -->
+<section id="cta">
+  <h2 class="reveal">Tu empresa necesita<br>capital para crecer.</h2>
+  <p class="reveal" data-delay="1">No lo dejes para después. Hay opciones disponibles hoy.</p>
+  <div class="cta-btns reveal" data-delay="2">
+    <a href="#hero" class="cta-btn primary">Solicitar información ahora</a>
+    <a href="tel:+520000000000" class="cta-btn secondary">📞 Llamar ahora</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 24 24" fill="white"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.18L20 8.5v7L12 19.82 4 15.5v-7l8-4.32z"/></svg>
+    </div>
+    <span class="footer-brand-name">FinAsesores</span>
+  </div>
+  <div class="footer-links">
+    <a href="#">Aviso de privacidad</a>
+    <a href="#">Crédito Empresarial</a>
+    <a href="#">Quiénes somos</a>
+    <a href="tel:+520000000000">Contacto</a>
+  </div>
+</footer>
+
+<script>
+  /* ── SCROLL REVEAL ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── TRUST BAR stagger ── */
+  const trustObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      document.querySelectorAll('.trust-item').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 100);
+      });
+      trustObs.disconnect();
+    }
+  }, { threshold: 0.1 });
+
+  const trustBar = document.getElementById('trust');
+  if (trustBar) trustObs.observe(trustBar);
+
+  /* ── BANCO PILLS stagger ── */
+  const pillObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      document.querySelectorAll('.banco-pill').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 40);
+      });
+      pillObs.disconnect();
+    }
+  }, { threshold: 0.05 });
+
+  const bancosGrid = document.querySelector('.bancos-grid');
+  if (bancosGrid) pillObs.observe(bancosGrid);
+
+  /* ── STAT COUNTER ── */
+  function animateCounter(el, target, suffix, duration = 3500) {
+    const start = performance.now();
+    const update = (now) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = Math.round(eased * target) + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    };
+    requestAnimationFrame(update);
+  }
+
+  const statsObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      const stats = document.querySelectorAll('.hero-stat strong');
+      // 72 hrs
+      if (stats[0]) animateCounter(stats[0], 72, ' hrs');
+      // 30+
+      if (stats[2]) animateCounter(stats[2], 30, '+');
+      statsObs.disconnect();
+    }
+  }, { threshold: 0.1 });
+
+  const heroProof = document.querySelector('.hero-proof');
+  if (heroProof) statsObs.observe(heroProof);
+
+  /* ── NAV SCROLL EFFECT ── */
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+</script>
+</body>
+</html>

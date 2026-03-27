@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Propuesta Comercial — Linda Web & Growth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'NOTHING';
+      src: url('./NOTHING.otf.ttf') format('truetype');
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --white: #ffffff;
+      --black: #000000;
+      --gray: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    *, *::before, *::after { cursor: none !important; }
+
+    /* ─── CURSOR ─── */
+    #cur-dot {
+      width: 7px; height: 7px;
+      background: #fff;
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    }
+    #cur-ring {
+      width: 34px; height: 34px;
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s ease-out, width 0.2s, height 0.2s;
+    }
+
+    /* ─── PANTALLA CONTRASEÑA ─── */
+    #password-screen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      transition: opacity 0.7s ease;
+    }
+
+    #password-screen.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pw-logo {
+      font-family: 'NOTHING', sans-serif;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.1em;
+      margin-bottom: 72px;
+    }
+
+    .pw-label {
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 28px;
+    }
+
+    .pw-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      width: 320px;
+    }
+
+    .pw-input-wrap {
+      width: 100%;
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 14px;
+      margin-bottom: 32px;
+      transition: border-color 0.3s;
+    }
+
+    .pw-input-wrap:focus-within {
+      border-bottom-color: rgba(255,255,255,0.6);
+    }
+
+    .pw-input-wrap svg { opacity: 0.3; flex-shrink: 0; }
+
+    #pw-field {
+      background: none;
+      border: none;
+      outline: none;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      width: 100%;
+    }
+
+    #pw-field::placeholder {
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.15em;
+    }
+
+    .pw-btn {
+      width: 100%;
+      padding: 14px;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.7);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      cursor: none;
+      transition: all 0.35s;
+    }
+
+    .pw-btn:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+
+    .pw-error {
+      margin-top: 20px;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .pw-error.show { opacity: 1; }
+
+    /* ─── LOADER ─── */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    #loader.active { display: flex; }
+
+    #loader-num {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(80px, 16vw, 180px);
+      color: #fff;
+      line-height: 1;
+      user-select: none;
+    }
+
+    #loader-bar {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 2px;
+      width: 0%;
+      background: #fff;
+      transition: width 0.05s linear;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 28px 52px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-family: 'NOTHING', sans-serif;
+      font-size: 13px;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+
+    .nav-date {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .nav-confidential {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 6px 14px;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 0 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(52px, 10vw, 130px);
+      line-height: 0.9;
+      color: #fff;
+    }
+
+    .hero-title .for-client {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      font-size: clamp(18px, 2.5vw, 28px);
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 32px;
+      line-height: 1;
+    }
+
+    .hero-meta {
+      position: absolute;
+      bottom: 52px;
+      left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .hero-meta span em {
+      font-style: normal;
+      color: rgba(255,255,255,0.6);
+    }
+
+    /* ─── DIVIDER ─── */
+    .divider { width: 100%; height: 1px; background: var(--border); }
+
+    /* ─── SECTION COMMON ─── */
+    .section-label {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(44px, 7vw, 84px);
+      line-height: 0.95;
+    }
+
+    /* ─── DIAGNÓSTICO ─── */
+    #diagnostico {
+      padding: 130px 52px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .diag-left {
+      position: sticky;
+      top: 120px;
+    }
+
+    .diag-left .section-title { margin-bottom: 40px; }
+
+    .diag-text {
+      font-size: 15px;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.85;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 32px;
+      max-width: 380px;
+    }
+
+    .diag-text em {
+      font-style: normal;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .diag-points {
+      list-style: none;
+      padding-top: 8px;
+    }
+
+    .diag-points li {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .diag-points li:first-child { border-top: 1px solid rgba(255,255,255,0.07); }
+
+    .diag-num {
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.15em;
+      flex-shrink: 0;
+      width: 28px;
+    }
+
+    .diag-point-text {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.4;
+    }
+
+    /* ─── ALCANCE ─── */
+    #alcance {
+      padding: 130px 52px 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #alcance .section-title { margin-bottom: 72px; }
+
+    .alcance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .alcance-item {
+      background: #000;
+      padding: 44px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.35s;
+    }
+
+    .alcance-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .alcance-item:hover { background: rgba(255,255,255,0.02); }
+    .alcance-item:hover::before { opacity: 1; }
+
+    .alcance-num {
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.2em;
+      margin-bottom: 28px;
+    }
+
+    .alcance-name {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(18px, 1.8vw, 22px);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .alcance-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.75;
+    }
+
+    .alcance-tag {
+      display: inline-block;
+      margin-top: 24px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 5px 12px;
+    }
+
+    /* ─── EJEMPLOS ─── */
+    #ejemplos {
+      padding: 130px 52px 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #ejemplos .section-title { margin-bottom: 72px; }
+
+    .ejemplos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .ejemplo-card {
+      border: 1px solid var(--border);
+      padding: 52px 48px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s;
+    }
+
+    .ejemplo-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .ejemplo-card:hover { border-color: rgba(255,255,255,0.28); }
+    .ejemplo-card:hover::after { opacity: 1; }
+
+    .ejemplo-tag {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 28px;
+    }
+
+    .ejemplo-name {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(24px, 2.5vw, 34px);
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .ejemplo-desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.7;
+      max-width: 360px;
+      margin-bottom: 44px;
+    }
+
+    .ejemplo-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-top: auto;
+      transition: color 0.3s;
+    }
+
+    .ejemplo-card:hover .ejemplo-cta { color: #fff; }
+
+    .ejemplo-cta svg { transition: transform 0.3s; }
+    .ejemplo-card:hover .ejemplo-cta svg { transform: translateX(5px); }
+
+    /* ─── INVERSIÓN ─── */
+    #inversion {
+      padding: 130px 52px 120px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #inversion .section-title { margin-bottom: 80px; }
+
+    .inversion-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .inv-card {
+      border: 1px solid var(--border);
+      padding: 52px 44px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s;
+    }
+
+    .inv-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.06) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    .inv-card:hover { border-color: rgba(255,255,255,0.25); }
+    .inv-card:hover::after { opacity: 1; }
+
+    .inv-card.featured {
+      border-color: rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .inv-card.featured::after { opacity: 1; }
+
+    .inv-tag {
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      margin-bottom: 36px;
+    }
+
+    .inv-name {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(22px, 2.4vw, 30px);
+      line-height: 1.05;
+      margin-bottom: 12px;
+    }
+
+    .inv-tagline {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+      margin-bottom: 40px;
+    }
+
+    .inv-features {
+      list-style: none;
+      margin-bottom: 44px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .inv-features li {
+      font-size: 13px;
+      color: rgba(255,255,255,0.62);
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .inv-features li::before {
+      content: '—';
+      color: rgba(255,255,255,0.2);
+      flex-shrink: 0;
+    }
+
+    .inv-price {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(28px, 3.5vw, 44px);
+    }
+
+    .inv-price-note {
+      display: block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    /* ─── LANDING PRECIO ─── */
+    #landing-precio {
+      padding: 130px 52px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    #landing-precio .section-title { margin-bottom: 80px; }
+
+    .landing-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .landing-price-hero {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(56px, 7vw, 96px);
+      line-height: 0.9;
+      margin-bottom: 8px;
+    }
+
+    .landing-price-note {
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+    }
+
+    .landing-desc-block {
+      padding: 52px 44px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .landing-desc-intro {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.85;
+      margin-bottom: 36px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 32px;
+    }
+
+    .landing-desc-intro em {
+      font-style: normal;
+      color: rgba(255,255,255,0.9);
+    }
+
+    /* ─── MANTENIMIENTO ─── */
+    #mantenimiento {
+      padding: 130px 52px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    #mantenimiento .section-title { margin-bottom: 80px; }
+
+    .mant-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .mant-col {
+      background: #000;
+      padding: 44px 40px;
+    }
+
+    .mant-col-label {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+    }
+
+    .mant-col-price {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(28px, 3.5vw, 48px);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .mant-col-price-note {
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      display: block;
+    }
+
+    /* ─── GOOGLE ADS ─── */
+    #google-ads {
+      padding: 130px 52px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    #google-ads .section-title { margin-bottom: 80px; }
+
+    .ads-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .ads-context {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      line-height: 1.85;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 32px;
+    }
+
+    .ads-context em {
+      font-style: normal;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .ads-numbers {
+      padding: 40px 36px;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ads-numbers::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .ads-num-label {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 14px;
+    }
+
+    .ads-num-big {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(24px, 3vw, 40px);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .ads-num-sub {
+      font-size: 11px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      display: block;
+    }
+
+    .ads-num-sep {
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 4px 0 28px;
+    }
+
+    .ads-disclaimer {
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.28);
+      line-height: 1.7;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 20px;
+      margin-top: 4px;
+    }
+
+    /* ─── PROCESO ─── */
+    #proceso {
+      padding: 130px 52px 120px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    #proceso .section-title { margin-bottom: 80px; }
+
+    .proceso-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .proceso-step {
+      background: #000;
+      padding: 40px 32px;
+      position: relative;
+    }
+
+    .paso-num {
+      font-size: 11px;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.2em;
+      margin-bottom: 24px;
+    }
+
+    .paso-name {
+      font-family: 'NOTHING', sans-serif;
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .paso-desc {
+      font-size: 12.5px;
+      color: rgba(255,255,255,0.45);
+      line-height: 1.7;
+    }
+
+    .paso-duration {
+      display: inline-block;
+      margin-top: 20px;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 4px 10px;
+    }
+
+    /* ─── PROXIMOS PASOS ─── */
+    #siguientes {
+      padding: 120px 52px 140px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .sig-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 28px;
+    }
+
+    #siguientes .section-title {
+      font-size: clamp(44px, 8vw, 100px);
+      margin-bottom: 44px;
+    }
+
+    .sig-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.85;
+      max-width: 520px;
+      margin: 0 auto 56px;
+    }
+
+    .sig-desc em {
+      font-style: normal;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .sig-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .sig-btn {
+      padding: 15px 52px;
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transition: all 0.35s;
+    }
+
+    .sig-btn.primary {
+      background: #fff;
+      color: #000;
+      border: 1px solid #fff;
+    }
+
+    .sig-btn.primary:hover {
+      background: transparent;
+      color: #fff;
+      border-color: rgba(255,255,255,0.5);
+    }
+
+    .sig-btn.secondary {
+      border: 1px solid rgba(255,255,255,0.25);
+      color: rgba(255,255,255,0.65);
+    }
+
+    .sig-btn.secondary:hover {
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 36px 52px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.12em;
+    }
+
+    /* ─── TOUCH ─── */
+    @media (pointer: coarse) {
+      body { cursor: auto; }
+      #cur-dot, #cur-ring { display: none; }
+      a, button { cursor: pointer; }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 960px) {
+      nav { padding: 22px 24px; }
+      .nav-confidential { display: none; }
+      #diagnostico { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      .diag-left { position: static; }
+      #alcance, #ejemplos, #landing-precio, #mantenimiento, #google-ads, #proceso, #siguientes { padding: 80px 24px; }
+      .alcance-grid, .proceso-steps { grid-template-columns: 1fr; }
+      .ejemplos-grid, .landing-layout, .mant-grid, .ads-layout { grid-template-columns: 1fr; }
+      .ads-layout { gap: 40px; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
+      .hero-meta { flex-direction: column; gap: 12px; align-items: center; }
+      .sig-ctas { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── CONTRASEÑA ── -->
+<div id="password-screen">
+  <p class="pw-logo">LINDA WEB &amp; GROWTH</p>
+  <p class="pw-label">Documento confidencial</p>
+  <div class="pw-form">
+    <div class="pw-input-wrap">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
+        <rect x="2" y="7" width="12" height="8" rx="1.5"/>
+        <path d="M5 7V5a3 3 0 0 1 6 0v2"/>
+      </svg>
+      <input type="password" id="pw-field" placeholder="Contraseña" autocomplete="current-password">
+    </div>
+    <button class="pw-btn" onclick="checkPassword()">Acceder</button>
+    <p class="pw-error" id="pw-error">Contraseña incorrecta</p>
+  </div>
+</div>
+
+<!-- ── LOADER ── -->
+<div id="loader">
+  <div id="loader-num">0</div>
+  <div id="loader-bar"></div>
+</div>
+
+<!-- ── CURSOR ── -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="nav-logo">LINDA WEB &amp; GROWTH</a>
+  <div class="nav-right">
+    <span class="nav-date" id="nav-date"></span>
+    <span class="nav-confidential">Confidencial</span>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <p class="hero-eyebrow">Propuesta Comercial</p>
+  <h1 class="hero-title">
+    SISTEMA DE<br>CAPTACIÓN
+    <span class="for-client">Para: Creditaria Belegan</span>
+  </h1>
+  <div class="hero-meta">
+    <span>Preparado por <em>Linda Web &amp; Growth</em></span>
+    <span>Válido hasta <em id="validez-date"></em></span>
+    <span>Ref. <em>CB-001</em></span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── DIAGNÓSTICO ── -->
+<section id="diagnostico">
+  <div class="diag-left">
+    <p class="section-label">El contexto</p>
+    <h2 class="section-title">LO QUE<br>VIMOS</h2>
+    <p class="diag-text">
+      La presencia digital de <em>Creditaria Belegan</em> existe,
+      pero no está trabajando para generar negocio.
+      Hay <em>demanda activa en Google</em> que hoy no está llegando.
+    </p>
+  </div>
+  <ul class="diag-points">
+    <li>
+      <span class="diag-num">01</span>
+      <span class="diag-point-text">No se están generando leads activos</span>
+    </li>
+    <li>
+      <span class="diag-num">02</span>
+      <span class="diag-point-text">Presencia digital sin enfoque comercial</span>
+    </li>
+    <li>
+      <span class="diag-num">03</span>
+      <span class="diag-point-text">No se está aprovechando la demanda en Google</span>
+    </li>
+    <li>
+      <span class="diag-num">04</span>
+      <span class="diag-point-text">Empresas buscando financiamiento hoy — pero no están llegando a Creditaria Belegan</span>
+    </li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── ALCANCE ── -->
+<section id="alcance">
+  <p class="section-label">Lo que incluye</p>
+  <h2 class="section-title">SISTEMA DE<br>CAPTACIÓN</h2>
+
+  <div class="alcance-grid">
+    <div class="alcance-item">
+      <p class="alcance-num">01</p>
+      <h3 class="alcance-name">Landing Page Estratégica</h3>
+      <p class="alcance-desc">Estructura enfocada en conversión, segmentada por tipo de crédito. Diseñada para transformar visitas en prospectos calificados.</p>
+      <span class="alcance-tag">Diseño + Desarrollo</span>
+    </div>
+
+    <div class="alcance-item">
+      <p class="alcance-num">02</p>
+      <h3 class="alcance-name">Copywriting Estratégico</h3>
+      <p class="alcance-desc">Mensajes diseñados para hablarle directamente al empresario que necesita crédito — y convencerlo de dar el siguiente paso.</p>
+      <span class="alcance-tag">Conversión</span>
+    </div>
+
+    <div class="alcance-item">
+      <p class="alcance-num">03</p>
+      <h3 class="alcance-name">Formularios de Leads Calificados</h3>
+      <p class="alcance-desc">Formularios que filtran prospectos desde el primer contacto, entregando solo oportunidades reales a tu equipo de ventas.</p>
+      <span class="alcance-tag">Calificación</span>
+    </div>
+
+    <div class="alcance-item">
+      <p class="alcance-num">04</p>
+      <h3 class="alcance-name">Integración WhatsApp / CRM</h3>
+      <p class="alcance-desc">Conexión directa entre la landing y tu equipo comercial. Ningún prospecto se pierde en el camino.</p>
+      <span class="alcance-tag">Automatización</span>
+    </div>
+
+    <div class="alcance-item">
+      <p class="alcance-num">05</p>
+      <h3 class="alcance-name">Optimización para Google Ads</h3>
+      <p class="alcance-desc">Estructura técnica lista para activar campañas de pago desde el día uno — sin rehacer nada.</p>
+      <span class="alcance-tag">Paid Media</span>
+    </div>
+
+    <div class="alcance-item">
+      <p class="alcance-num">06</p>
+      <h3 class="alcance-name">Diseño Responsive</h3>
+      <p class="alcance-desc">Experiencia impecable en cualquier dispositivo. La mayoría de los prospectos llegan desde el celular.</p>
+      <span class="alcance-tag">Mobile First</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── EJEMPLOS ── -->
+<section id="ejemplos">
+  <p class="section-label">Referencias</p>
+  <h2 class="section-title">TRABAJO<br>REAL</h2>
+
+  <div class="ejemplos-grid">
+    <a class="ejemplo-card" href="ejemplo-creditaria.html" target="_blank" rel="noopener">
+      <p class="ejemplo-tag">Opción A — Corporativo / Dark</p>
+      <h3 class="ejemplo-name">Navy &<br>Naranja</h3>
+      <p class="ejemplo-desc">Diseño oscuro y directo — navy profundo, naranja de acción. Formulario calificador en el hero, barra de confianza, tipos de crédito y CTA a WhatsApp. Estilo financiero tradicional con alta conversión.</p>
+      <span class="ejemplo-cta">
+        Ver diseño
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </span>
+    </a>
+
+    <a class="ejemplo-card" href="ejemplo-montecapital.html" target="_blank" rel="noopener">
+      <p class="ejemplo-tag">Opción B — Editorial / Premium</p>
+      <h3 class="ejemplo-name">Crema &<br>Verde</h3>
+      <p class="ejemplo-desc">Diseño claro y editorial — fondo crema, verde bosque, tipografía bold. Fondo 3D animado, transiciones GSAP, tilt interactivo en tarjetas. Mismo sistema de captación, experiencia visual más premium.</p>
+      <span class="ejemplo-cta">
+        Ver diseño
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </span>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── LANDING PAGE — PRECIO ── -->
+<section id="landing-precio">
+  <p class="section-label">La inversión</p>
+  <h2 class="section-title">LANDING<br>PAGE</h2>
+
+  <div class="landing-layout">
+
+    <!-- Precio + entregables -->
+    <div class="inv-card featured">
+      <p class="inv-tag">Pago único · Entrega en 2–3 semanas</p>
+      <div class="landing-price-hero">$9,600</div>
+      <p class="landing-price-note">MXN · Desarrollo único</p>
+      <ul class="inv-features">
+        <li>Estrategia y copywriting</li>
+        <li>Diseño e implementación</li>
+        <li>Formulario calificador de leads</li>
+        <li>Integración WhatsApp / CRM</li>
+        <li>Optimización técnica para Google Ads</li>
+        <li>Diseño responsive (mobile first)</li>
+        <li>Hosting primer mes incluido</li>
+      </ul>
+    </div>
+
+    <!-- Contexto -->
+    <div class="landing-desc-block">
+      <p class="inv-tag">Qué estás construyendo</p>
+      <p class="landing-desc-intro">
+        No es un sitio web.<br><br>
+        Es un <em>sistema de captación</em> diseñado para transformar la demanda activa en Google en prospectos calificados que llegan directamente a tu equipo.
+      </p>
+      <ul class="diag-points">
+        <li>
+          <span class="diag-num">→</span>
+          <span class="diag-point-text">Activo y generando leads desde el primer día</span>
+        </li>
+        <li>
+          <span class="diag-num">→</span>
+          <span class="diag-point-text">Listo para conectar con Google Ads cuando quieras escalar</span>
+        </li>
+        <li>
+          <span class="diag-num">→</span>
+          <span class="diag-point-text">Construido para mejorar — y mejorar — con el tiempo</span>
+        </li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── MANTENIMIENTO ── -->
+<section id="mantenimiento">
+  <p class="section-label">Mantenimiento mensual</p>
+  <h2 class="section-title">SOPORTE<br>CONTINUO</h2>
+
+  <div class="mant-grid">
+
+    <!-- Básico -->
+    <div class="mant-col">
+      <p class="mant-col-label">Básico</p>
+      <div class="mant-col-price">$800</div>
+      <span class="mant-col-price-note">MXN / mes</span>
+      <ul class="inv-features">
+        <li>Hosting y dominio</li>
+        <li>Soporte técnico</li>
+        <li>Actualizaciones menores de contenido</li>
+        <li>Monitoreo de disponibilidad</li>
+      </ul>
+    </div>
+
+    <!-- Con desarrollo -->
+    <div class="mant-col">
+      <p class="mant-col-label">Con Desarrollo</p>
+      <div class="mant-col-price">$1,800</div>
+      <span class="mant-col-price-note">MXN / mes</span>
+      <ul class="inv-features">
+        <li>Todo lo del plan básico</li>
+        <li>Optimizaciones de conversión</li>
+        <li>A/B testing de elementos clave</li>
+        <li>Mejoras continuas de UX</li>
+        <li>Reporte mensual de rendimiento</li>
+        <li>Gestión de campañas Google Ads</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── GOOGLE ADS ── -->
+<section id="google-ads">
+  <p class="section-label">Cuando estés listo</p>
+  <h2 class="section-title">GOOGLE<br>ADS</h2>
+
+  <div class="ads-layout">
+
+    <div>
+      <p class="section-label" style="margin-bottom: 32px;">La recomendación</p>
+      <p class="ads-context">
+        La landing puede funcionar de forma orgánica desde el primer día. Cuando estés listo para <em>escalar la captación</em>, Google Ads es el canal más directo para poner el sistema frente a empresas que están buscando financiamiento en este momento.
+      </p>
+    </div>
+
+    <div class="ads-numbers">
+      <p class="ads-num-label">Pauta mensual recomendada (Fase 1)</p>
+      <div class="ads-num-big">$4,000 – $6,000 <span style="font-family:'Inter',sans-serif; font-size:clamp(13px,1.2vw,16px); font-weight:300; color:rgba(255,255,255,0.4); letter-spacing:0.1em;">MXN / mes</span></div>
+
+      <div class="ads-num-sep"></div>
+
+      <p class="ads-disclaimer">
+        Este presupuesto va directamente a Google — no pasa por nosotros. La configuración, gestión y optimización de campañas está <em style="font-style:normal; color:rgba(255,255,255,0.65);">incluida en el plan de mantenimiento con desarrollo ($1,800/mes)</em>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── PROCESO ── -->
+<section id="proceso">
+  <p class="section-label">Cómo trabajamos</p>
+  <h2 class="section-title">EL<br>PROCESO</h2>
+
+  <div class="proceso-steps">
+    <div class="proceso-step">
+      <p class="paso-num">01</p>
+      <h3 class="paso-name">Arranque</h3>
+      <p class="paso-desc">Reunión de kick-off, recolección de materiales, definición de objetivos y tono de marca.</p>
+      <span class="paso-duration">Semana 1</span>
+    </div>
+
+    <div class="proceso-step">
+      <p class="paso-num">02</p>
+      <h3 class="paso-name">Estrategia y Diseño</h3>
+      <p class="paso-desc">Arquitectura de la solución, wireframes y propuesta visual para tu aprobación.</p>
+      <span class="paso-duration">Semana 1–2</span>
+    </div>
+
+    <div class="proceso-step">
+      <p class="paso-num">03</p>
+      <h3 class="paso-name">Desarrollo</h3>
+      <p class="paso-desc">Construcción, integración de contenidos y revisiones hasta ajuste perfecto.</p>
+      <span class="paso-duration">Semana 2–[N]</span>
+    </div>
+
+    <div class="proceso-step">
+      <p class="paso-num">04</p>
+      <h3 class="paso-name">Lanzamiento</h3>
+      <p class="paso-desc">Publicación, verificaciones finales y handoff con guía de uso y soporte post-entrega.</p>
+      <span class="paso-duration">Semana [N]</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SIGUIENTES PASOS ── -->
+<section id="siguientes">
+  <p class="sig-eyebrow">¿Listo para empezar?</p>
+  <h2 class="section-title">SIGUIENTE<br>PASO</h2>
+  <p class="sig-desc">
+    Agendamos una llamada de 30 minutos para
+    <em>confirmar el alcance, resolver dudas</em> y dar el arranque formal.
+    El sistema puede estar activo en menos de 3 semanas.
+  </p>
+  <div class="sig-ctas">
+    <!-- ↓ Reemplazar con el link real de WhatsApp o calendly -->
+    <a href="https://wa.me/527293626302" class="sig-btn primary" target="_blank" rel="noopener">Agendar llamada</a>
+    <a href="mailto:lndmolano@gmail.com" class="sig-btn secondary">Enviar email</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>Linda Web &amp; Growth — Documento confidencial</span>
+  <span id="footer-date"></span>
+</footer>
+
+<script>
+  /* ─── CONTRASEÑA ───────────────────────────────────
+   *  Cambiar el valor de PASSWORD antes de enviar.
+   *  Ejemplo: const PASSWORD = 'linda2025';
+   * ─────────────────────────────────────────────── */
+  const PASSWORD = 'creditaria2025';
+
+  function checkPassword() {
+    const val = document.getElementById('pw-field').value;
+    const err = document.getElementById('pw-error');
+    if (val === PASSWORD) {
+      err.classList.remove('show');
+      document.getElementById('password-screen').classList.add('hide');
+      setTimeout(() => {
+        document.getElementById('password-screen').style.display = 'none';
+        startLoader();
+      }, 700);
+    } else {
+      err.classList.add('show');
+      document.getElementById('pw-field').value = '';
+      document.getElementById('pw-field').focus();
+    }
+  }
+
+  document.getElementById('pw-field').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+
+  /* ─── LOADER ─── */
+  function startLoader() {
+    const loader = document.getElementById('loader');
+    const num = document.getElementById('loader-num');
+    const bar = document.getElementById('loader-bar');
+    loader.classList.add('active');
+    let n = 0;
+    const tick = setInterval(() => {
+      n += Math.floor(Math.random() * 8) + 3;
+      if (n >= 100) { n = 100; clearInterval(tick); }
+      num.textContent = n;
+      bar.style.width = n + '%';
+      if (n === 100) {
+        setTimeout(() => {
+          loader.style.opacity = '0';
+          loader.style.transition = 'opacity 0.5s';
+          setTimeout(() => loader.classList.remove('active'), 500);
+        }, 300);
+      }
+    }, 40);
+  }
+
+  /* ─── CURSOR ─── */
+  const dot = document.getElementById('cur-dot');
+  const ring = document.getElementById('cur-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  (function loop() {
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(loop);
+  })();
+
+  /* ─── FECHAS ─── */
+  const now = new Date();
+  const opts = { year: 'numeric', month: 'long', day: 'numeric' };
+  const locale = 'es-MX';
+  document.getElementById('nav-date').textContent = now.toLocaleDateString(locale, opts);
+  document.getElementById('footer-date').textContent = now.toLocaleDateString(locale, opts);
+  // Validez: 30 días a partir de hoy
+  const validez = new Date(now); validez.setDate(validez.getDate() + 30);
+  document.getElementById('validez-date').textContent = validez.toLocaleDateString(locale, opts);
+</script>
+
+</body>
+</html>
